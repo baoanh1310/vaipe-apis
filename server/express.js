@@ -7,6 +7,7 @@ import cors from 'cors'
 import helmet from 'helmet'
 import userRoutes from './routes/user.routes'
 import authRoutes from './routes/auth.routes'
+import weightRoutes from './routes/weight.routes'
 
 //comment out before building for production
 // import devBundle from './devBundle'
@@ -32,6 +33,7 @@ app.use('/dist', express.static(path.join(CURRENT_WORKING_DIR, 'dist')))
 // mount routes
 app.use('/', userRoutes)
 app.use('/', authRoutes)
+app.use('/', weightRoutes)
 
 // Catch unauthorised errors
 app.use((err, req, res, next) => {
