@@ -11,6 +11,7 @@ import weightRoutes from './routes/weight.routes'
 import bloodRoutes from './routes/blood.routes'
 import oxyRoutes from './routes/oxy.routes'
 import ecgRoutes from './routes/ecg.routes'
+import prescriptionRoutes from './routes/prescription.routes'
 
 //comment out before building for production
 // import devBundle from './devBundle'
@@ -40,6 +41,7 @@ app.use('/', weightRoutes)
 app.use('/', bloodRoutes)
 app.use('/', oxyRoutes)
 app.use('/', ecgRoutes)
+app.use('/', prescriptionRoutes)
 
 // Catch unauthorised errors
 app.use((err, req, res, next) => {

@@ -1,11 +1,12 @@
-import Ecg from '../models/ecg.model'
+import Prescription from '../models/prescription.model'
 import errorHandler from '../helpers/dbErrorHandler'
 
 const create = async (req, res) => {
     const { value, img_path } = req.body
     let values = JSON.parse(value)
     values = [...values]
-    const ecg = new Ecg(
+    console.log(values)
+    const prescription = new Prescription(
         {
             value: values,
             img_path,
@@ -13,9 +14,9 @@ const create = async (req, res) => {
         }
     )
     try {
-        await ecg.save()
+        await prescription.save()
         return res.status(200).json({
-            message: "Save new ECG values successfully!"
+            message: "Save new prescription successfully!"
         })
     } catch (err) {
         console.log(err.message)
@@ -27,8 +28,8 @@ const create = async (req, res) => {
 
 const list = async (req, res) => {
     try {
-        let ecgs = await Ecg.find().select('value img_path created')
-        res.json(ecgs)
+        let prescriptions = await Prescription.find().select('value img_path created')
+        res.json(prescriptions)
     } catch (err) {
         return res.status(400).json({
             error: errorHandler.getErrorMessage(err)
