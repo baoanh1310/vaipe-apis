@@ -17,6 +17,9 @@ const UserSchema = new mongoose.Schema({
         type: String,
         required: "Password is required"
     },
+    avatar_path: {
+        type: String
+    },
     salt: String,
     updated: Date,
     created: {
