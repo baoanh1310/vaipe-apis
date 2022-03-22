@@ -9,6 +9,7 @@ import userRoutes from './routes/user.routes'
 import authRoutes from './routes/auth.routes'
 import weightRoutes from './routes/weight.routes'
 import bloodRoutes from './routes/blood.routes'
+import oxyRoutes from './routes/oxy.routes'
 
 //comment out before building for production
 // import devBundle from './devBundle'
@@ -36,6 +37,7 @@ app.use('/', userRoutes)
 app.use('/', authRoutes)
 app.use('/', weightRoutes)
 app.use('/', bloodRoutes)
+app.use('/', oxyRoutes)
 
 // Catch unauthorised errors
 app.use((err, req, res, next) => {
