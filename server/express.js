@@ -8,6 +8,7 @@ import helmet from 'helmet'
 import userRoutes from './routes/user.routes'
 import authRoutes from './routes/auth.routes'
 import weightRoutes from './routes/weight.routes'
+import bloodRoutes from './routes/blood.routes'
 
 //comment out before building for production
 // import devBundle from './devBundle'
@@ -34,6 +35,7 @@ app.use('/dist', express.static(path.join(CURRENT_WORKING_DIR, 'dist')))
 app.use('/', userRoutes)
 app.use('/', authRoutes)
 app.use('/', weightRoutes)
+app.use('/', bloodRoutes)
 
 // Catch unauthorised errors
 app.use((err, req, res, next) => {
