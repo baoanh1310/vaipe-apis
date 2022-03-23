@@ -1,3 +1,4 @@
+import mongoose from 'mongoose'
 import Ecg from '../models/ecg.model'
 import errorHandler from '../helpers/dbErrorHandler'
 
@@ -25,10 +26,15 @@ const create = async (req, res) => {
     }
 }
 
-const list = async (req, res) => {
+const getStatsEcg = async (req, res) => {
     try {
-        let ecgs = await Ecg.find().select('value img_path created')
-        res.json(ecgs)
+        let ecgs = await Ecg.find(mongoose.Schema.Types.ObjectId(req.profile._id)).select('value')
+        ecgs = [...ecgs]
+        let result = []
+        for (let val of ecgs) {
+            result.push(val['value'])
+        }
+        res.json(result)
     } catch (err) {
         return res.status(400).json({
             error: errorHandler.getErrorMessage(err)
@@ -38,5 +44,5 @@ const list = async (req, res) => {
 
 export default {
     create,
-    list
+    getStatsEcg
 }

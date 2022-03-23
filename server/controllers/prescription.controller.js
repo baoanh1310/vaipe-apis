@@ -1,3 +1,4 @@
+import mongoose from 'mongoose'
 import Prescription from '../models/prescription.model'
 import errorHandler from '../helpers/dbErrorHandler'
 
@@ -26,10 +27,15 @@ const create = async (req, res) => {
     }
 }
 
-const list = async (req, res) => {
+const getStatsPrescription = async (req, res) => {
     try {
-        let prescriptions = await Prescription.find().select('value img_path created')
-        res.json(prescriptions)
+        let prescriptions = await Prescription.find(mongoose.Schema.Types.ObjectId(req.profile._id)).select('value')
+        prescriptions = [...prescriptions]
+        let result = []
+        for (let val of prescriptions) {
+            result.push(val['value'])
+        }
+        res.json(result)
     } catch (err) {
         return res.status(400).json({
             error: errorHandler.getErrorMessage(err)
@@ -39,5 +45,5 @@ const list = async (req, res) => {
 
 export default {
     create,
-    list
+    getStatsPrescription
 }

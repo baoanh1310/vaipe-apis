@@ -6,7 +6,7 @@ import prescriptionCtrl from '../controllers/prescription.controller'
 const router = express.Router()
 
 router.route('/api/prescription/:userId')
-  .get(authCtrl.requireSignin, authCtrl.hasAuthorization, prescriptionCtrl.list)
+  .get(authCtrl.requireSignin, authCtrl.hasAuthorization, prescriptionCtrl.getStatsPrescription)
   .post(authCtrl.requireSignin, authCtrl.hasAuthorization, prescriptionCtrl.create)
 
 router.param('userId', userCtrl.userByID)
