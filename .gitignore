@@ -1,6 +1,5 @@
 node_modules
 dist
-assets
 .env
 request.http
 .vscode-upload.json
