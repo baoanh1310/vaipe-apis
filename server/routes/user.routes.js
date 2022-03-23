@@ -13,6 +13,10 @@ router.route('/api/users/:userId')
   .put(authCtrl.requireSignin, authCtrl.hasAuthorization, userCtrl.update)
   .delete(authCtrl.requireSignin, authCtrl.hasAuthorization, userCtrl.remove)
 
+
+// router.route('/api/avatar/:userId')
+//   .post(authCtrl.requireSignin, authCtrl.hasAuthorization, )
+
 router.param('userId', userCtrl.userByID)
 
 export default router

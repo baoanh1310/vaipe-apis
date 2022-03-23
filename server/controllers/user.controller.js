@@ -1,4 +1,5 @@
 import User from '../models/user.model'
+import mongoose from 'mongoose'
 import extend from 'lodash/extend'
 import errorHandler from '../helpers/dbErrorHandler'
 

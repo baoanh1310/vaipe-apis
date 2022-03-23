@@ -6,7 +6,7 @@ import weightCtrl from '../controllers/weight.controller'
 const router = express.Router()
 
 router.route('/api/weights/:userId')
-  .get(authCtrl.requireSignin, authCtrl.hasAuthorization, weightCtrl.list)
+  .get(authCtrl.requireSignin, authCtrl.hasAuthorization, weightCtrl.getStatsWeight)
   .post(authCtrl.requireSignin, authCtrl.hasAuthorization, weightCtrl.create)
 
 router.param('userId', userCtrl.userByID)

@@ -1,3 +1,4 @@
+import mongoose from 'mongoose'
 import Blood from '../models/blood.model'
 import errorHandler from '../helpers/dbErrorHandler'
 
@@ -23,10 +24,15 @@ const create = async (req, res) => {
     }
 }
 
-const list = async (req, res) => {
+const getStatsBlood = async (req, res) => {
     try {
-        let bloods = await Blood.find().select('value img_path created')
-        res.json(bloods)
+        let bloods = await Blood.find(mongoose.Schema.Types.ObjectId(req.profile._id)).select('value')
+        bloods = [...bloods]
+        let result = []
+        for (let val of bloods) {
+            result.push(val["value"])
+        }
+        res.json(result)
     } catch (err) {
         return res.status(400).json({
             error: errorHandler.getErrorMessage(err)
@@ -36,5 +42,5 @@ const list = async (req, res) => {
 
 export default {
     create,
-    list
+    getStatsBlood
 }

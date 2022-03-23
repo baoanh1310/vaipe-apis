@@ -1,3 +1,4 @@
+import mongoose from 'mongoose'
 import Weight from '../models/weight.model'
 import errorHandler from '../helpers/dbErrorHandler'
 
@@ -23,10 +24,15 @@ const create = async (req, res) => {
     }
 }
 
-const list = async (req, res) => {
+const getStatsWeight = async (req, res) => {
     try {
-        let weights = await Weight.find().select('value img_path created')
-        res.json(weights)
+        let weights = await Weight.find(mongoose.Schema.Types.ObjectId(req.profile._id)).select('value')
+        weights = [...weights]
+        let result = []
+        for (let val of weights) {
+            result.push(val["value"])
+        }
+        res.json(result)
     } catch (err) {
         return res.status(400).json({
             error: errorHandler.getErrorMessage(err)
@@ -36,5 +42,5 @@ const list = async (req, res) => {
 
 export default {
     create,
-    list
+    getStatsWeight
 }

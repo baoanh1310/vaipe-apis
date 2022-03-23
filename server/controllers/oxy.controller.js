@@ -1,3 +1,4 @@
+import mongoose from 'mongoose'
 import Oxy from '../models/oxy.model'
 import errorHandler from '../helpers/dbErrorHandler'
 
@@ -23,10 +24,15 @@ const create = async (req, res) => {
     }
 }
 
-const list = async (req, res) => {
+const getStatsOxy = async (req, res) => {
     try {
-        let oxys = await Oxy.find().select('value img_path created')
-        res.json(oxys)
+        let oxys = await Oxy.find(mongoose.Schema.Types.ObjectId(req.profile._id)).select('value')
+        oxys = [...oxys]
+        let result = []
+        for (let val of oxys) {
+            result.push(val["value"])
+        }
+        res.json(result)
     } catch (err) {
         return res.status(400).json({
             error: errorHandler.getErrorMessage(err)
@@ -36,5 +42,5 @@ const list = async (req, res) => {
 
 export default {
     create,
-    list
+    getStatsOxy
 }
