@@ -1,33 +1,26 @@
 import multer from 'multer'
 
-/**
- *
- * @param {Object} options
- * @param {Array.<String>} options.acceptFile ex: ['png', 'jpg']
- */
-let diskStorage = multer.diskStorage({
-    destination: (req, file, callback) => {
-        callback(null, __dirname + "/../assets/imgs")
-    },
-    filename: (req, file, callback) => {
-        let filename = `${req.profile._id}-productimg-${file.originalname}`
-        callback(null, filename)
-    }
-});
-
-const upload = ({ acceptFile }) => {
-    return multer({
-        storage: diskStorage,
-        fileFilter: (req, file, cb) => {
-            if (acceptFile && acceptFile instanceof Array) {
-                const ex = file.originalname.split(".").pop()
-                if (!acceptFile.includes(ex)) {
-                    return cb(new Error(`400:File must be formated ${acceptFile.join(", ")}`))
-                }
-            }
-            cb(null, true)
-        }
-    })
+const MIME_TYPE_MAP = {
+    'image/png': 'png',
+    'image/jpeg': 'jpeg',
+    'image/jpg': 'jpg'
 }
+  
+const upload = multer({
+    limits: 500000,
+    storage: multer.diskStorage({
+        destination: (req, file, cb) => {
+            cb(null, __dirname + './../assets/imgs')
+        },
+        filename: (req, file, cb) => {
+            cb(null, req.profile._id + '-' + file.originalname)
+        }
+    }),
+    fileFilter: (req, file, cb) => {
+        const isValid = !!MIME_TYPE_MAP[file.mimetype]
+        let error = isValid ? null : new Error('Invalid mime type!')
+        cb(error, isValid)
+    }
+})
 
 export default upload
