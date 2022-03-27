@@ -10,6 +10,7 @@ import authRoutes from './routes/auth.routes'
 import weightRoutes from './routes/weight.routes'
 import bloodRoutes from './routes/blood.routes'
 import oxyRoutes from './routes/oxy.routes'
+import temperatureRoutes from './routes/temperature.routes'
 import ecgRoutes from './routes/ecg.routes'
 import prescriptionRoutes from './routes/prescription.routes'
 
@@ -40,6 +41,7 @@ app.use('/', authRoutes)
 app.use('/', weightRoutes)
 app.use('/', bloodRoutes)
 app.use('/', oxyRoutes)
+app.use('/', temperatureRoutes)
 app.use('/', ecgRoutes)
 app.use('/', prescriptionRoutes)
 
