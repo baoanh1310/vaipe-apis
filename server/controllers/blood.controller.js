@@ -3,7 +3,8 @@ import Blood from '../models/blood.model'
 import errorHandler from '../helpers/dbErrorHandler'
 
 const create = async (req, res) => {
-    const { value, img_path } = req.body
+    const { value } = req.body
+    const img_path = req.file.path
     const blood = new Blood(
         {
             value,
