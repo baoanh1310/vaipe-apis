@@ -3,7 +3,8 @@ import Ecg from '../models/ecg.model'
 import errorHandler from '../helpers/dbErrorHandler'
 
 const create = async (req, res) => {
-    const { value, img_path } = req.body
+    const { value } = req.body
+    const img_path = req.file.path
     let values = JSON.parse(value)
     values = [...values]
     const ecg = new Ecg(
