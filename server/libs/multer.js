@@ -1,4 +1,5 @@
 import multer from 'multer'
+import { v4 as uuidv4 } from 'uuid'
 
 const MIME_TYPE_MAP = {
     'image/png': 'png',
@@ -13,7 +14,7 @@ const upload = multer({
             cb(null, __dirname + './../assets/imgs')
         },
         filename: (req, file, cb) => {
-            cb(null, req.profile._id + '-' + file.originalname)
+            cb(null, req.profile._id + '-' + uuidv4().toString() + '-' + file.originalname)
         }
     }),
     fileFilter: (req, file, cb) => {
