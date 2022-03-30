@@ -21,11 +21,11 @@ const signin = async (req, res) => {
 
         const token = jwt.sign({
             _id: user._id
-        }, config.jwtSecret)
+        }, config.jwtSecret, { expiresIn: config.tokenLife })
 
-        res.cookie("t", token, {
-            expire: new Date() + 9999
-        })
+        // res.cookie("t", token, {
+        //     expire: new Date() + 9999
+        // })
 
         return res.json({
             token,
