@@ -7,5 +7,7 @@ router.route('/auth/signin')
   .post(authCtrl.signin)
 router.route('/auth/signout')
   .get(authCtrl.signout)
+router.route('/auth/refresh_token')
+  .post(authCtrl.getNewToken)
 
 export default router

@@ -3,6 +3,8 @@ import jwt from 'jsonwebtoken'
 import expressJwt from 'express-jwt'
 import config from './../../config/config'
 
+const tokenList = {}
+
 const signin = async (req, res) => {
     try {
         let user = await User.findOne({
@@ -23,12 +25,20 @@ const signin = async (req, res) => {
             _id: user._id
         }, config.jwtSecret, { expiresIn: config.tokenLife })
 
+        const refreshToken = jwt.sign({
+            _id: user._id
+        }, config.jwtRefreshSecret, { expiresIn: config.refreshTokenLife })
+
+        // save refreshToken
+        tokenList[refreshToken] = user._id
+
         // res.cookie("t", token, {
         //     expire: new Date() + 9999
         // })
 
         return res.json({
             token,
+            refreshToken,
             user: {
                 _id: user._id,
                 name: user.name,
@@ -68,9 +78,50 @@ const hasAuthorization = (req, res, next) => {
     next()
 }
 
+const getNewToken = async (req, res) => {
+    const { refreshToken } = req.body
+
+    if (!refreshToken) {
+        return res.status('403').json({
+            error: "No refresh token provided"
+        })
+    }
+
+    try {
+        let user = await User.findOne({
+            "_id": tokenList[refreshToken]
+        })
+        if (!user)
+            return res.status('403').json({
+                error: "Invalid refresh token"
+        })
+
+        // Create new access token
+        const token = jwt.sign({
+                        _id: user._id
+                    }, config.jwtSecret, { expiresIn: config.tokenLife })
+        
+        return res.json({
+            token,
+            user: {
+                _id: user._id,
+                name: user.name,
+                email: user.email
+            }
+        })
+    } catch (err) {
+
+        return res.status('401').json({
+            error: "Cannot get new access token"
+        })
+
+    }
+}
+
 export default {
     signin,
     signout,
     requireSignin,
-    hasAuthorization
+    hasAuthorization,
+    getNewToken
 }
