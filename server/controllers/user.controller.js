@@ -75,7 +75,7 @@ const forgotPassword = async (req, res) => {
     try {
 	let user_mail = req.body.email
 	let user = await User.findOne({email: user_mail})
-	let new_password = uuidv4().toString() // generate random new password
+	let new_password = uuidv4().toString().split('-')[0] // generate random new password
 	user = extend(user, {password: new_password})
 	user.updated = Date.now()
 	await user.save()
