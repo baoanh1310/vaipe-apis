@@ -9,6 +9,9 @@ router.route('/api/users')
   // .get(userCtrl.list)
   .post(userCtrl.create)
 
+router.route('/api/users/reset-password')  
+  .post(userCtrl.forgotPassword)
+
 router.route('/api/users/:userId')
   .get(authCtrl.requireSignin, authCtrl.hasAuthorization, userCtrl.read)
   .put(authCtrl.requireSignin, authCtrl.hasAuthorization, userCtrl.update)

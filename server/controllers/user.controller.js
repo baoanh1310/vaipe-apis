@@ -1,6 +1,8 @@
 import User from '../models/user.model'
 import extend from 'lodash/extend'
 import errorHandler from '../helpers/dbErrorHandler'
+import mailer from '../libs/mailer'
+import { v4 as uuidv4 } from 'uuid'
 
 const create = async (req, res) => {
     const user = new User(req.body)
@@ -69,6 +71,25 @@ const update = async (req, res) => {
     }
 }
 
+const forgotPassword = async (req, res) => {
+    try {
+	let user_mail = req.body.email
+	let user = await User.findOne({email: user_mail})
+	let new_password = uuidv4().toString() // generate random new password
+	user = extend(user, {password: new_password})
+	user.updated = Date.now()
+	await user.save()
+
+	let content = `Your new password is ${new_password}\nPlease use it to login and change your password for secure purpose`
+	let mail_subject = "VAIPE App - Reset Password"
+	await mailer.sendMail(user_mail, mail_subject, content)
+    } catch (err) {
+	return res.status(400).json({
+	    error: errorHandler.getErrorMessage(err)
+	})
+    }
+}
+
 const remove = async (req, res) => {
     try {
         let user = req.profile
@@ -106,5 +127,6 @@ export default {
     list,
     remove,
     update,
-    imgUpload
+    imgUpload,
+    forgotPassword
 }
