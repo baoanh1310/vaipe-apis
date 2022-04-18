@@ -29,11 +29,11 @@ const create = async (req, res) => {
 
 const getStatsEcg = async (req, res) => {
     try {
-        let ecgs = await Ecg.find(mongoose.Schema.Types.ObjectId(req.profile._id)).select('value')
+        let ecgs = await Ecg.find(mongoose.Schema.Types.ObjectId(req.profile._id))
         ecgs = [...ecgs]
         let result = []
         for (let val of ecgs) {
-            result.push(val['value'])
+            result.push({"created": val['created'], "value": val['value']})
         }
         res.json(result)
     } catch (err) {

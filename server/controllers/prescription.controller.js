@@ -34,7 +34,7 @@ const getStatsPrescription = async (req, res) => {
         prescriptions = [...prescriptions]
         let result = []
         for (let val of prescriptions) {
-            result.push({"created": val['created'], "drugs": val['value']})
+            result.push({"created": val['created'], "value": val['value']})
         }
         res.json(result)
     } catch (err) {
