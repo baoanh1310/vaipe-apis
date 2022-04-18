@@ -30,11 +30,11 @@ const create = async (req, res) => {
 
 const getStatsPrescription = async (req, res) => {
     try {
-        let prescriptions = await Prescription.find(mongoose.Schema.Types.ObjectId(req.profile._id)).select('value')
+        let prescriptions = await Prescription.find(mongoose.Schema.Types.ObjectId(req.profile._id))
         prescriptions = [...prescriptions]
         let result = []
         for (let val of prescriptions) {
-            result.push(val['value'])
+            result.push({"created": val['created'], "drugs": val['value']})
         }
         res.json(result)
     } catch (err) {
