@@ -20,6 +20,12 @@ const UserSchema = new mongoose.Schema({
     avatar_path: {
         type: String
     },
+    birth: {
+        type: Date
+    },
+    gender: {
+        type: Number
+    },
     salt: String,
     updated: Date,
     created: {
