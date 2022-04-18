@@ -27,11 +27,11 @@ const create = async (req, res) => {
 
 const getStatsOxy = async (req, res) => {
     try {
-        let oxys = await Oxy.find(mongoose.Schema.Types.ObjectId(req.profile._id)).select('value')
+        let oxys = await Oxy.find(mongoose.Schema.Types.ObjectId(req.profile._id))
         oxys = [...oxys]
         let result = []
         for (let val of oxys) {
-            result.push(val["value"])
+            result.push({"created": val["created"], "value": val["value"]})
         }
         res.json(result)
     } catch (err) {

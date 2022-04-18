@@ -27,11 +27,11 @@ const create = async (req, res) => {
 
 const getStatsBlood = async (req, res) => {
     try {
-        let bloods = await Blood.find(mongoose.Schema.Types.ObjectId(req.profile._id)).select('value')
+        let bloods = await Blood.find(mongoose.Schema.Types.ObjectId(req.profile._id))
         bloods = [...bloods]
         let result = []
         for (let val of bloods) {
-            result.push(val["value"])
+            result.push({"created": val["created"], "value": val["value"]})
         }
         res.json(result)
     } catch (err) {

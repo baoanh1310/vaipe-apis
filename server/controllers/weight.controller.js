@@ -27,11 +27,11 @@ const create = async (req, res) => {
 
 const getStatsWeight = async (req, res) => {
     try {
-        let weights = await Weight.find(mongoose.Schema.Types.ObjectId(req.profile._id)).select('value')
+        let weights = await Weight.find(mongoose.Schema.Types.ObjectId(req.profile._id))
         weights = [...weights]
         let result = []
         for (let val of weights) {
-            result.push(val["value"])
+            result.push({"created": val["created"], "value": val["value"]})
         }
         res.json(result)
     } catch (err) {
