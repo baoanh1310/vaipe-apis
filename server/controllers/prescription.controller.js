@@ -34,7 +34,7 @@ const getStatsPrescription = async (req, res) => {
         prescriptions = [...prescriptions]
         let result = []
         for (let val of prescriptions) {
-            result.push({"created": val['created'], "value": val['value']})
+            result.push({"id": val['_id'], "created": val['created'], "value": val['value']})
         }
         res.json(result)
     } catch (err) {
@@ -44,7 +44,28 @@ const getStatsPrescription = async (req, res) => {
     }
 }
 
+const deleteById = async (req, res) => {
+    const id = req.params.id
+    try {
+        let prescription = await Prescription.findByIdAndRemove(id)
+        if (!prescription) {
+            return res.status(400).json({
+                message: "Cannot delete not existed prescription"
+            })
+        }
+        return res.status(200).json({
+            message: "Delete prescription successfully!",
+            deletedItem: prescription
+        })
+    } catch (err) {
+        return res.status(400).json({
+            error: errorHandler.getErrorMessage(err)
+        })
+    }
+}
+
 export default {
     create,
-    getStatsPrescription
+    getStatsPrescription,
+    deleteById
 }
