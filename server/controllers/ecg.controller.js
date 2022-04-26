@@ -33,7 +33,7 @@ const getStatsEcg = async (req, res) => {
         ecgs = [...ecgs]
         let result = []
         for (let val of ecgs) {
-            result.push({"created": val['created'], "value": val['value']})
+            result.push({"id": val['_id'], "created": val['created'], "value": val['value']})
         }
         res.json(result)
     } catch (err) {
@@ -43,7 +43,28 @@ const getStatsEcg = async (req, res) => {
     }
 }
 
+const deleteById = async (req, res) => {
+    const id = req.params.id
+    try {
+        let ecg = await Ecg.findByIdAndRemove(id)
+        if (!ecg) {
+            return res.status(400).json({
+                message: "Cannot delete not existed ecg"
+            })
+        }
+        return res.status(200).json({
+            message: "Delete ECG successfully!",
+            deletedItem: ecg
+        })
+    } catch (err) {
+        return res.status(400).json({
+            error: errorHandler.getErrorMessage(err)
+        })
+    }
+}
+
 export default {
     create,
-    getStatsEcg
+    getStatsEcg,
+    deleteById
 }

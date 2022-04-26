@@ -10,6 +10,10 @@ router.route('/api/ecg/:userId')
   .get(authCtrl.requireSignin, authCtrl.hasAuthorization, ecgCtrl.getStatsEcg)
   .post(authCtrl.requireSignin, authCtrl.hasAuthorization, upload.single('image'), ecgCtrl.create)
 
+router.route('/api/ecg/:userId/:id')
+  .delete(authCtrl.requireSignin, authCtrl.hasAuthorization, ecgCtrl.deleteById)
+
+
 router.param('userId', userCtrl.userByID)
 
 export default router
