@@ -23,11 +23,11 @@ const signin = async (req, res) => {
 
         const token = jwt.sign({
             _id: user._id
-        }, config.jwtSecret, { expiresIn: config.tokenLife })
+        }, config.jwtSecret, { expiresIn: config.tokenLife, algorithm: 'RS256' })
 
         const refreshToken = jwt.sign({
             _id: user._id
-        }, config.jwtRefreshSecret, { expiresIn: config.refreshTokenLife })
+        }, config.jwtRefreshSecret, { expiresIn: config.refreshTokenLife, algorithm: 'RS256' })
 
         // save refreshToken
         tokenList[refreshToken] = user._id
@@ -63,9 +63,9 @@ const signout = (req, res) => {
 }
 
 const requireSignin = expressJwt({
-    secret: config.jwtSecret,
+    secret: config.accessPublicKey,
     userProperty: 'auth',
-    algorithms: ['HS256']
+    algorithms: ['RS256']
 })
 
 const hasAuthorization = (req, res, next) => {

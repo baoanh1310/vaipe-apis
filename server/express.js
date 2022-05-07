@@ -13,7 +13,10 @@ import oxyRoutes from './routes/oxy.routes'
 import temperatureRoutes from './routes/temperature.routes'
 import ecgRoutes from './routes/ecg.routes'
 import prescriptionRoutes from './routes/prescription.routes'
+import apiRoutes from './routes/docs.routes'
 
+const swaggerUi = require('swagger-ui-express');
+const swaggerDocument = require('./swagger.json');
 //comment out before building for production
 // import devBundle from './devBundle'
 
@@ -44,6 +47,14 @@ app.use('/', oxyRoutes)
 app.use('/', temperatureRoutes)
 app.use('/', ecgRoutes)
 app.use('/', prescriptionRoutes)
+
+const swaggerOption = {
+  swaggerOptions: {
+    preauthorizeApiKey: true
+  }}
+
+app.use('/', apiRoutes)
+app.use('/hello', (req, res) => { res.send('Icebear')})
 
 // Catch unauthorised errors
 app.use((err, req, res, next) => {
