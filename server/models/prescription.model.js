@@ -9,6 +9,10 @@ const PrescriptionSchema = new mongoose.Schema({
         type: Date,
         default: Date.now
     },
+    name: {
+        type: String,
+        required: 'Prescription name is required'
+    },
     img_path: {
         type: String
     },

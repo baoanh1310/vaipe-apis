@@ -12,6 +12,10 @@ const ECGSchema = new mongoose.Schema({
     img_path: {
         type: String
     },
+    name: {
+        type: String,
+        required: 'ECG name is required'
+    },
     user: {
         type: mongoose.Schema.Types.ObjectId,
         ref: "User"

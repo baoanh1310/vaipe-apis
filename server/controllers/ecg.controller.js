@@ -3,12 +3,13 @@ import Ecg from '../models/ecg.model'
 import errorHandler from '../helpers/dbErrorHandler'
 
 const create = async (req, res) => {
-    const { value } = req.body
+    const { name, value } = req.body
     const img_path = req.file.path
     let values = JSON.parse(value)
     values = [...values]
     const ecg = new Ecg(
         {
+            name: name,
             value: values,
             img_path,
             user: req.profile._id
@@ -22,6 +23,7 @@ const create = async (req, res) => {
     } catch (err) {
         console.log(err.message)
         return res.status(400).json({
+            appStatus: -1,
             error: errorHandler.getErrorMessage(err)
         })
     }
@@ -33,11 +35,18 @@ const getStatsEcg = async (req, res) => {
         ecgs = [...ecgs]
         let result = []
         for (let val of ecgs) {
-            result.push({"id": val['_id'], "created": val['created'], "value": val['value']})
+            result.push({"name": val['name'], "id": val['_id'], "created": val['created'], "value": val['value']})
         }
-        res.json(result)
+        let obj = {
+            "appStatus": 0,
+            "data": {
+                "result": result
+            }
+        }
+        res.json(obj)
     } catch (err) {
         return res.status(400).json({
+            appStatus: -1,
             error: errorHandler.getErrorMessage(err)
         })
     }
@@ -49,6 +58,7 @@ const deleteById = async (req, res) => {
         let ecg = await Ecg.findByIdAndRemove(id)
         if (!ecg) {
             return res.status(400).json({
+                appStatus: -1,
                 message: "Cannot delete not existed ecg"
             })
         }
@@ -58,6 +68,7 @@ const deleteById = async (req, res) => {
         })
     } catch (err) {
         return res.status(400).json({
+            appStatus: -1,
             error: errorHandler.getErrorMessage(err)
         })
     }
@@ -69,6 +80,7 @@ const getById = async (req, res) => {
         let ecg = await Ecg.findById(id)
         if (!ecg) {
             return res.status(400).json({
+                appStatus: -1,
                 message: "ECG not found"
             })
         }
@@ -77,6 +89,7 @@ const getById = async (req, res) => {
         })
     } catch (err) {
         return res.status(400).json({
+            appStatus: -1,
             error: errorHandler.getErrorMessage(err)
         })
     }

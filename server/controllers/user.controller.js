@@ -14,6 +14,7 @@ const create = async (req, res) => {
     } catch (err) {
         console.log(err.message)
         return res.status(400).json({
+            appStatus: -1,
             error: errorHandler.getErrorMessage(err)
         })
     }
@@ -27,12 +28,14 @@ const userByID = async (req, res, next, id) => {
         let user = await User.findById(id)
         if (!user)
             return res.status('400').json({
+                appStatus: -1,
                 error: "User not found"
             })
         req.profile = user
         next()
     } catch (err) {
         return res.status('400').json({
+            appStatus: -1,
             error: "Could not retrieve user"
         })
     }
@@ -50,6 +53,7 @@ const list = async (req, res) => {
         res.json(users)
     } catch (err) {
         return res.status(400).json({
+            appStatus: -1,
             error: errorHandler.getErrorMessage(err)
         })
     }
@@ -66,6 +70,7 @@ const update = async (req, res) => {
         res.json(user)
     } catch (err) {
         return res.status(400).json({
+            appStatus: -1,
             error: errorHandler.getErrorMessage(err)
         })
     }
@@ -73,20 +78,21 @@ const update = async (req, res) => {
 
 const forgotPassword = async (req, res) => {
     try {
-	let user_mail = req.body.email
-	let user = await User.findOne({email: user_mail})
-	let new_password = uuidv4().toString().split('-')[0] // generate random new password
-	user = extend(user, {password: new_password})
-	user.updated = Date.now()
-	await user.save()
+        let user_mail = req.body.email
+        let user = await User.findOne({email: user_mail})
+        let new_password = uuidv4().toString().split('-')[0] // generate random new password
+        user = extend(user, {password: new_password})
+        user.updated = Date.now()
+        await user.save()
 
-	let content = `Your new password is ${new_password}\nPlease use it to login and change your password for secure purpose`
-	let mail_subject = "VAIPE App - Reset Password"
-	await mailer.sendMail(user_mail, mail_subject, content)
+        let content = `Your new password is ${new_password}\nPlease use it to login and change your password for secure purpose`
+        let mail_subject = "VAIPE App - Reset Password"
+        await mailer.sendMail(user_mail, mail_subject, content)
     } catch (err) {
-	return res.status(400).json({
-	    error: errorHandler.getErrorMessage(err)
-	})
+        return res.status(400).json({
+            appStatus: -1,
+            error: errorHandler.getErrorMessage(err)
+        })
     }
 }
 
@@ -99,6 +105,7 @@ const remove = async (req, res) => {
         res.json(deletedUser)
     } catch (err) {
         return res.status(400).json({
+            appStatus: -1,
             error: errorHandler.getErrorMessage(err)
         })
     }
@@ -115,6 +122,7 @@ const imgUpload = async (req, res) => {
         res.json(user)
     } catch (err) {
         return res.status(400).json({
+            appStatus: -1,
             error: errorHandler.getErrorMessage(err)
         })
     }

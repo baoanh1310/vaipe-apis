@@ -12,11 +12,13 @@ const signin = async (req, res) => {
         })
         if (!user)
             return res.status('401').json({
+                appStatus: -1,
                 error: "User not found"
         })
 
         if (!user.authenticate(req.body.password)) {
             return res.status('401').send({
+                appStatus: -1,
                 error: "Email and password don't match."
             })
         }
@@ -49,6 +51,7 @@ const signin = async (req, res) => {
     } catch (err) {
 
         return res.status('401').json({
+            appStatus: -1,
             error: "Could not sign in"
         })
 
@@ -72,6 +75,7 @@ const hasAuthorization = (req, res, next) => {
     const authorized = req.profile && req.auth && req.profile._id == req.auth._id
     if (!(authorized)) {
         return res.status('403').json({
+            appStatus: -1,
             error: "User is not authorized"
         })
     }
@@ -83,6 +87,7 @@ const getNewToken = async (req, res) => {
 
     if (!refreshToken) {
         return res.status('403').json({
+            appStatus: -1,
             error: "No refresh token provided"
         })
     }
@@ -93,6 +98,7 @@ const getNewToken = async (req, res) => {
         })
         if (!user)
             return res.status('403').json({
+                appStatus: -1,
                 error: "Invalid refresh token"
         })
 
@@ -112,6 +118,7 @@ const getNewToken = async (req, res) => {
     } catch (err) {
 
         return res.status('401').json({
+            appStatus: -1,
             error: "Cannot get new access token"
         })
 

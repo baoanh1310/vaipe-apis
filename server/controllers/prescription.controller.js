@@ -3,13 +3,14 @@ import Prescription from '../models/prescription.model'
 import errorHandler from '../helpers/dbErrorHandler'
 
 const create = async (req, res) => {
-    const { value } = req.body
+    const { name, value } = req.body
     const img_path = req.file.path
     let values = JSON.parse(value)
     values = [...values]
     console.log(values)
     const prescription = new Prescription(
         {
+            name, name,
             value: values,
             img_path,
             user: req.profile._id
@@ -23,6 +24,7 @@ const create = async (req, res) => {
     } catch (err) {
         console.log(err.message)
         return res.status(400).json({
+            appStatus: -1,
             error: errorHandler.getErrorMessage(err)
         })
     }
@@ -34,12 +36,20 @@ const getStatsPrescription = async (req, res) => {
         prescriptions = [...prescriptions]
         let result = []
         for (let val of prescriptions) {
-            result.push({"id": val['_id'], "created": val['created'], "value": val['value']})
+            result.push({"name": val['name'], "id": val['_id'], "created": val['created'], "value": val['value']})
         }
-        res.json(result)
+        let obj = {
+            "appStatus": 0,
+            "data": {
+                "result": result
+            }
+        }
+        res.json(obj)
     } catch (err) {
         return res.status(400).json({
-            error: errorHandler.getErrorMessage(err)
+            // error: errorHandler.getErrorMessage(err)
+            appStatus: -1,
+            data: {}
         })
     }
 }
@@ -50,6 +60,7 @@ const deleteById = async (req, res) => {
         let prescription = await Prescription.findByIdAndRemove(id)
         if (!prescription) {
             return res.status(400).json({
+                appStatus: -1,
                 message: "Cannot delete not existed prescription"
             })
         }
@@ -59,6 +70,7 @@ const deleteById = async (req, res) => {
         })
     } catch (err) {
         return res.status(400).json({
+            appStatus: -1,
             error: errorHandler.getErrorMessage(err)
         })
     }
@@ -74,10 +86,12 @@ const getById = async (req, res) => {
             })
         }
         return res.status(200).json({
+            appStatus: 0,
             value: prescription
         })
     } catch (err) {
         return res.status(400).json({
+            appStatus: -1,
             error: errorHandler.getErrorMessage(err)
         })
     }
