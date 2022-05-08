@@ -63,8 +63,28 @@ const deleteById = async (req, res) => {
     }
 }
 
+const getById = async (req, res) => {
+    const id = req.params.id
+    try {
+        let ecg = await Ecg.findById(id)
+        if (!ecg) {
+            return res.status(400).json({
+                message: "ECG not found"
+            })
+        }
+        return res.status(200).json({
+            value: ecg
+        })
+    } catch (err) {
+        return res.status(400).json({
+            error: errorHandler.getErrorMessage(err)
+        })
+    }
+}
+
 export default {
     create,
     getStatsEcg,
-    deleteById
+    deleteById,
+    getById
 }

@@ -11,6 +11,7 @@ router.route('/api/prescription/:userId')
   .post(authCtrl.requireSignin, authCtrl.hasAuthorization, upload.single('image'), prescriptionCtrl.create)
 
 router.route('/api/prescription/:userId/:id')
+  .get(authCtrl.requireSignin, authCtrl.hasAuthorization, prescriptionCtrl.getById)
   .delete(authCtrl.requireSignin, authCtrl.hasAuthorization, prescriptionCtrl.deleteById)
 
 router.param('userId', userCtrl.userByID)

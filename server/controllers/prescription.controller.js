@@ -64,8 +64,28 @@ const deleteById = async (req, res) => {
     }
 }
 
+const getById = async (req, res) => {
+    const id = req.params.id
+    try {
+        let prescription = await Prescription.findById(id)
+        if (!prescription) {
+            return res.status(400).json({
+                message: "Prescription not found"
+            })
+        }
+        return res.status(200).json({
+            value: prescription
+        })
+    } catch (err) {
+        return res.status(400).json({
+            error: errorHandler.getErrorMessage(err)
+        })
+    }
+}
+
 export default {
     create,
     getStatsPrescription,
-    deleteById
+    deleteById,
+    getById
 }
