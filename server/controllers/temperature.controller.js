@@ -33,10 +33,18 @@ const getStatsTemperature = async (req, res) => {
         for (let val of temperatures) {
             result.push({"created": val["created"], "value": val["value"]})
         }
-        res.json(result)
+        let obj = {
+            "appStatus": 0,
+            "data": {
+                "result": result
+            }
+        }
+        res.json(obj)
     } catch (err) {
         return res.status(400).json({
-            error: errorHandler.getErrorMessage(err)
+            // error: errorHandler.getErrorMessage(err)
+            appStatus: -1,
+            data: {}
         })
     }
 }
