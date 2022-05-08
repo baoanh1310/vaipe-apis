@@ -12,4 +12,8 @@ router.route('/api/oxy/:userId')
 
 router.param('userId', userCtrl.userByID)
 
+router.route('/api/oxy/')
+  .get(authCtrl.requireSignin, oxyCtrl.getStatsOxy)
+  .post(authCtrl.requireSignin, upload.single('image'), oxyCtrl.create)
+
 export default router

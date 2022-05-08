@@ -31,7 +31,7 @@ const create = async (req, res) => {
 
 const getStatsEcg = async (req, res) => {
     try {
-        let ecgs = await Ecg.find(mongoose.Schema.Types.ObjectId(req.profile.userId))
+        let ecgs = await Ecg.find({ user: req.auth.userId })
         ecgs = [...ecgs]
         let result = []
         for (let val of ecgs) {

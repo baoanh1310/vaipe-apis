@@ -9,7 +9,7 @@ const create = async (req, res) => {
         {
             value,
             img_path,
-            user: req.profile._id
+            user: req.auth.userId
         }
     )
     try {
@@ -27,7 +27,8 @@ const create = async (req, res) => {
 
 const getStatsWeight = async (req, res) => {
     try {
-        let weights = await Weight.find(mongoose.Schema.Types.ObjectId(req.profile.userId))
+        // let weights = await Weight.find(mongoose.Types.ObjectId(req.profile.userId))
+        let weights = await Weight.find({ user: req.auth.userId })
         // let weights = await Weight.find(mongoose.Schema.Types.ObjectId(req.body.profile._id))
         weights = [...weights]
         let result = []

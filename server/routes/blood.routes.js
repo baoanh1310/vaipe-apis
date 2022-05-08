@@ -12,4 +12,8 @@ router.route('/api/blood/:userId')
 
 router.param('userId', userCtrl.userByID)
 
+router.route('/api/blood/')
+  .get(authCtrl.requireSignin, bloodCtrl.getStatsBlood)
+  .post(authCtrl.requireSignin, upload.single('image'), bloodCtrl.create)
+
 export default router

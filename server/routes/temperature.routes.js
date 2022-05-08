@@ -12,4 +12,8 @@ router.route('/api/temperature/:userId')
 
 router.param('userId', userCtrl.userByID)
 
+router.route('/api/temperature/')
+  .get(authCtrl.requireSignin, temperatureCtrl.getStatsTemperature)
+  .post(authCtrl.requireSignin, upload.single('image'), temperatureCtrl.create)
+
 export default router

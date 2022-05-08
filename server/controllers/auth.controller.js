@@ -75,8 +75,6 @@ const hasAuthorization = (req, res, next) => {
     const authorized = req.profile && req.auth && req.profile.userId == req.auth.userId
     // const authorized = req.profile && req.auth && req.profile._id == req.auth._id
     // const authorized = req.body.profile && req.auth && req.body.profile._id == req.auth._id
-    console.log("Profile: ", req.body.profile)
-    console.log("Auth: ", req.auth)
     if (!(authorized)) {
         return res.status('403').json({
             appStatus: -1,

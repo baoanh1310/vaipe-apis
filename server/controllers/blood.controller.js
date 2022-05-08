@@ -9,9 +9,10 @@ const create = async (req, res) => {
         {
             value,
             img_path,
-            user: req.profile._id
+            user: req.auth.userId
         }
     )
+    console.log("blood: ", blood)
     try {
         await blood.save()
         return res.status(200).json({
@@ -25,9 +26,16 @@ const create = async (req, res) => {
     }
 }
 
+const getTutorialsInCategory = function(categoryId) {
+    return db.Tutorial.find({ category: categoryId })
+        .populate("category", "name -_id")
+        .select("-comments -images -__v");
+};
+
 const getStatsBlood = async (req, res) => {
     try {
-        let bloods = await Blood.find(mongoose.Schema.Types.ObjectId(req.profile.userId))
+        let bloods = await Blood.find({ user: req.auth.userId })
+        console.log(bloods)
         bloods = [...bloods]
         let result = []
         for (let val of bloods) {

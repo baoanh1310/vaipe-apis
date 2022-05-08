@@ -13,7 +13,7 @@ const create = async (req, res) => {
             name, name,
             drugs: values,
             img_path,
-            user: req.profile._id
+            user: req.auth.userId
         }
     )
     try {
@@ -32,7 +32,8 @@ const create = async (req, res) => {
 
 const getStatsPrescription = async (req, res) => {
     try {
-        let prescriptions = await Prescription.find(mongoose.Schema.Types.ObjectId(req.profile.userId))
+        // let prescriptions = await Prescription.find(mongoose.Types.ObjectId(req.profile.userId))
+        let prescriptions = await Prescription.find({ user: req.auth.userId })
         // let prescriptions = await Prescription.find(mongoose.Schema.Types.ObjectId(req.body.profile._id))
         prescriptions = [...prescriptions]
         let result = []

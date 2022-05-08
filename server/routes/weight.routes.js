@@ -12,4 +12,8 @@ router.route('/api/weights/:userId')
 
 router.param('userId', userCtrl.userByID)
 
+router.route('/api/weights/')
+  .get(authCtrl.requireSignin, weightCtrl.getStatsWeight)
+  .post(authCtrl.requireSignin, upload.single('image'), weightCtrl.create)
+
 export default router

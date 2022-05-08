@@ -14,7 +14,8 @@ const upload = multer({
             cb(null, __dirname + './../assets/imgs')
         },
         filename: (req, file, cb) => {
-            cb(null, req.profile._id + '-' + uuidv4().toString() + '-' + file.originalname)
+            // cb(null, req.profile._id + '-' + uuidv4().toString() + '-' + file.originalname)
+            cb(null, req.auth.userId + '-' + uuidv4().toString() + '-' + file.originalname)
         }
     }),
     fileFilter: (req, file, cb) => {
