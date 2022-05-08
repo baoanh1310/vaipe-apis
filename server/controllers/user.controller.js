@@ -25,13 +25,14 @@ const create = async (req, res) => {
  */
 const userByID = async (req, res, next, id) => {
     try {
-        let user = await User.findById(id)
-        if (!user)
-            return res.status('400').json({
-                appStatus: -1,
-                error: "User not found"
-            })
-        req.profile = user
+        // let user = await User.findById(id)
+        // if (!user)
+        //     return res.status('400').json({
+        //         appStatus: -1,
+        //         error: "User not found"
+        //     })
+        // req.profile = 
+        req.profile = { "userId": id }
         next()
     } catch (err) {
         return res.status('400').json({

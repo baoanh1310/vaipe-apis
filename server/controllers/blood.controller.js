@@ -27,7 +27,7 @@ const create = async (req, res) => {
 
 const getStatsBlood = async (req, res) => {
     try {
-        let bloods = await Blood.find(mongoose.Schema.Types.ObjectId(req.profile._id))
+        let bloods = await Blood.find(mongoose.Schema.Types.ObjectId(req.profile.userId))
         bloods = [...bloods]
         let result = []
         for (let val of bloods) {

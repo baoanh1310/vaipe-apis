@@ -27,7 +27,8 @@ const create = async (req, res) => {
 
 const getStatsWeight = async (req, res) => {
     try {
-        let weights = await Weight.find(mongoose.Schema.Types.ObjectId(req.profile._id))
+        let weights = await Weight.find(mongoose.Schema.Types.ObjectId(req.profile.userId))
+        // let weights = await Weight.find(mongoose.Schema.Types.ObjectId(req.body.profile._id))
         weights = [...weights]
         let result = []
         for (let val of weights) {
@@ -42,7 +43,6 @@ const getStatsWeight = async (req, res) => {
         res.json(obj)
     } catch (err) {
         return res.status(400).json({
-            // error: errorHandler.getErrorMessage(err)
             appStatus: -1,
             data: {}
         })

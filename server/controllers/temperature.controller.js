@@ -27,7 +27,7 @@ const create = async (req, res) => {
 
 const getStatsTemperature = async (req, res) => {
     try {
-        let temperatures = await Temperature.find(mongoose.Schema.Types.ObjectId(req.profile._id))
+        let temperatures = await Temperature.find(mongoose.Schema.Types.ObjectId(req.profile.userId))
         temperatures = [...temperatures]
         let result = []
         for (let val of temperatures) {

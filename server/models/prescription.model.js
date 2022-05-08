@@ -1,7 +1,7 @@
 import mongoose from 'mongoose'
 
 const PrescriptionSchema = new mongoose.Schema({
-    value: {
+    drugs: {
         type: [Map],
         required: 'Prescription info is required'
     },

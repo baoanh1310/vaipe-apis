@@ -27,7 +27,7 @@ const create = async (req, res) => {
 
 const getStatsOxy = async (req, res) => {
     try {
-        let oxys = await Oxy.find(mongoose.Schema.Types.ObjectId(req.profile._id))
+        let oxys = await Oxy.find(mongoose.Schema.Types.ObjectId(req.profile.userId))
         oxys = [...oxys]
         let result = []
         for (let val of oxys) {

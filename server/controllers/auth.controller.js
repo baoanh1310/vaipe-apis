@@ -24,11 +24,11 @@ const signin = async (req, res) => {
         }
 
         const token = jwt.sign({
-            _id: user._id
+            userId: user._id
         }, config.jwtSecret, { expiresIn: config.tokenLife, algorithm: 'RS256' })
 
         const refreshToken = jwt.sign({
-            _id: user._id
+            userId: user._id
         }, config.jwtRefreshSecret, { expiresIn: config.refreshTokenLife, algorithm: 'RS256' })
 
         // save refreshToken
@@ -42,7 +42,7 @@ const signin = async (req, res) => {
             token,
             refreshToken,
             user: {
-                _id: user._id,
+                userId: user._id,
                 name: user.name,
                 email: user.email
             }
@@ -72,7 +72,11 @@ const requireSignin = expressJwt({
 })
 
 const hasAuthorization = (req, res, next) => {
-    const authorized = req.profile && req.auth && req.profile._id == req.auth._id
+    const authorized = req.profile && req.auth && req.profile.userId == req.auth.userId
+    // const authorized = req.profile && req.auth && req.profile._id == req.auth._id
+    // const authorized = req.body.profile && req.auth && req.body.profile._id == req.auth._id
+    console.log("Profile: ", req.body.profile)
+    console.log("Auth: ", req.auth)
     if (!(authorized)) {
         return res.status('403').json({
             appStatus: -1,

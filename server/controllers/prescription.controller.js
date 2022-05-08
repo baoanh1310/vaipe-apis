@@ -3,15 +3,15 @@ import Prescription from '../models/prescription.model'
 import errorHandler from '../helpers/dbErrorHandler'
 
 const create = async (req, res) => {
-    const { name, value } = req.body
+    const { name, drugs } = req.body
     const img_path = req.file.path
-    let values = JSON.parse(value)
+    let values = JSON.parse(drugs)
     values = [...values]
     console.log(values)
     const prescription = new Prescription(
         {
             name, name,
-            value: values,
+            drugs: values,
             img_path,
             user: req.profile._id
         }
@@ -32,11 +32,12 @@ const create = async (req, res) => {
 
 const getStatsPrescription = async (req, res) => {
     try {
-        let prescriptions = await Prescription.find(mongoose.Schema.Types.ObjectId(req.profile._id))
+        let prescriptions = await Prescription.find(mongoose.Schema.Types.ObjectId(req.profile.userId))
+        // let prescriptions = await Prescription.find(mongoose.Schema.Types.ObjectId(req.body.profile._id))
         prescriptions = [...prescriptions]
         let result = []
         for (let val of prescriptions) {
-            result.push({"name": val['name'], "id": val['_id'], "created": val['created'], "value": val['value']})
+            result.push({"name": val['name'], "id": val['_id'], "created": val['created'], "drugs": val['drugs']})
         }
         let obj = {
             "appStatus": 0,
