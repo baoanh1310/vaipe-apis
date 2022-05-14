@@ -12,12 +12,13 @@ const create = async (req, res) => {
             name: name,
             value: values,
             img_path,
-            user: req.profile._id
+            user: req.auth.userId
         }
     )
     try {
         await ecg.save()
         return res.status(200).json({
+            appStatus: 0,
             message: "Save new ECG values successfully!"
         })
     } catch (err) {

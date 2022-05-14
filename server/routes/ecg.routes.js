@@ -14,6 +14,13 @@ router.route('/api/ecg/:userId/:id')
   .get(authCtrl.requireSignin, authCtrl.hasAuthorization, ecgCtrl.getById)
   .delete(authCtrl.requireSignin, authCtrl.hasAuthorization, ecgCtrl.deleteById)
 
+router.route('/api/ecg/')
+  .get(authCtrl.requireSignin, ecgCtrl.getStatsEcg)
+  .post(authCtrl.requireSignin, upload.single('image'), ecgCtrl.create)
+
+router.route('/api/ecg/:id')
+  .get(authCtrl.requireSignin, ecgCtrl.getById)
+  .delete(authCtrl.requireSignin, ecgCtrl.deleteById)
 
 router.param('userId', userCtrl.userByID)
 

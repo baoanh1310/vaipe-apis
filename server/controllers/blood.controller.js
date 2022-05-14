@@ -26,12 +26,6 @@ const create = async (req, res) => {
     }
 }
 
-const getTutorialsInCategory = function(categoryId) {
-    return db.Tutorial.find({ category: categoryId })
-        .populate("category", "name -_id")
-        .select("-comments -images -__v");
-};
-
 const getStatsBlood = async (req, res) => {
     try {
         let bloods = await Blood.find({ user: req.auth.userId })
