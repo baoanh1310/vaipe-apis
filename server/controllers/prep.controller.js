@@ -1,16 +1,17 @@
 import mongoose from 'mongoose'
-import Prescription from '../models/prescription.model'
+import Prep from '../models/prep.model'
 import errorHandler from '../helpers/dbErrorHandler'
 
 const create = async (req, res) => {
-    const { name, drugs } = req.body
+    const { symtoms, diagnose, drugs } = req.body
     const img_path = req.file.path
     let values = JSON.parse(drugs)
     values = [...values]
     console.log(values)
-    const prescription = new Prescription(
+    const prescription = new Prep(
         {
-            name: name,
+            symtoms: symtoms,
+            diagnose: diagnose,
             drugs: values,
             img_path,
             user: req.auth.userId
@@ -20,7 +21,7 @@ const create = async (req, res) => {
         await prescription.save()
         return res.status(200).json({
             appStatus: 0,
-            message: "Save new prescription successfully!"
+            message: "Save new prep successfully!"
         })
     } catch (err) {
         console.log(err.message)
@@ -31,15 +32,15 @@ const create = async (req, res) => {
     }
 }
 
-const getStatsPrescription = async (req, res) => {
+const getStatsPrep = async (req, res) => {
     try {
         // let prescriptions = await Prescription.find(mongoose.Types.ObjectId(req.profile.userId))
-        let prescriptions = await Prescription.find({ user: req.auth.userId })
+        let prescriptions = await Prep.find({ user: req.auth.userId })
         // let prescriptions = await Prescription.find(mongoose.Schema.Types.ObjectId(req.body.profile._id))
         prescriptions = [...prescriptions]
         let result = []
         for (let val of prescriptions) {
-            result.push({"name": val['name'], "id": val['_id'], "created": val['created'], "drugs": val['drugs']})
+            result.push({"symtoms": val['symtoms'], "diagnose": val['diagnose'], "id": val['_id'], "created": val['created'], "drugs": val['drugs']})
         }
         let obj = {
             "appStatus": 0,
@@ -60,16 +61,16 @@ const getStatsPrescription = async (req, res) => {
 const deleteById = async (req, res) => {
     const id = req.params.id
     try {
-        let prescription = await Prescription.findByIdAndRemove(id)
+        let prescription = await Prep.findByIdAndRemove(id)
         if (!prescription) {
             return res.status(400).json({
                 appStatus: -1,
-                message: "Cannot delete not existed prescription"
+                message: "Cannot delete not existed prep"
             })
         }
         return res.status(200).json({
             appStatus: 0,
-            message: "Delete prescription successfully!",
+            message: "Delete prep successfully!",
             deletedItem: prescription
         })
     } catch (err) {
@@ -83,11 +84,10 @@ const deleteById = async (req, res) => {
 const getById = async (req, res) => {
     const id = req.params.id
     try {
-        let prescription = await Prescription.findById(id)
+        let prescription = await Prep.findById(id)
         if (!prescription) {
             return res.status(400).json({
-                appStatus: -1,
-                message: "Prescription not found"
+                message: "Prep not found"
             })
         }
         return res.status(200).json({
@@ -104,7 +104,7 @@ const getById = async (req, res) => {
 
 export default {
     create,
-    getStatsPrescription,
+    getStatsPrep,
     deleteById,
     getById
 }

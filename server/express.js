@@ -14,6 +14,10 @@ import temperatureRoutes from './routes/temperature.routes'
 import ecgRoutes from './routes/ecg.routes'
 import prescriptionRoutes from './routes/prescription.routes'
 import apiRoutes from './routes/docs.routes'
+import drugRoutes from './routes/drug.routes'
+import drugTakenRoutes from './routes/drugTaken.routes'
+import prepRoutes from './routes/prep.routes'
+import notificationRoutes from './routes/notification.routes'
 
 const swaggerUi = require('swagger-ui-express');
 const swaggerDocument = require('./swagger.json');
@@ -47,6 +51,11 @@ app.use('/', oxyRoutes)
 app.use('/', temperatureRoutes)
 app.use('/', ecgRoutes)
 app.use('/', prescriptionRoutes)
+app.use('/', drugRoutes)
+app.use('/', drugTakenRoutes)
+app.use('/', prepRoutes)
+app.use('/', notificationRoutes)
+
 
 const swaggerOption = {
   swaggerOptions: {
