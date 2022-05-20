@@ -25,6 +25,31 @@ const create = async (req, res) => {
     }
 }
 
+const update = async (req, res) => {
+    const id = req.params.id
+    try {
+        let notification = await Notification.findById(id)
+        if (!notification) {
+            return res.status(400).json({
+                appStatus: -1,
+                message: "Notification not found"
+            })
+        }
+        notification = extend(notification, req.body)
+        notification.updated = Date.now()
+        await notification.save()
+        return res.status(200).json({
+            appStatus: 0,
+            message: "Update notification successfully!"
+        })
+    } catch (err) {
+        return res.status(400).json({
+            appStatus: -1,
+            error: errorHandler.getErrorMessage(err)
+        })
+    }
+}
+
 const getNotiByUserId = async (req, res) => {
     try {
         let notifications = await Notification.find({ user: req.auth.userId })
@@ -98,5 +123,6 @@ export default {
     create,
     getNotiByUserId,
     getById,
-    deleteById
+    deleteById,
+    update
 }

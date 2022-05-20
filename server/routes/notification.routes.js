@@ -13,6 +13,7 @@ router.route('/api/notification/')
 
 router.route('/api/notification/:id')
   .get(authCtrl.requireSignin, notiCtrl.getById)
+  .put(authCtrl.requireSignin, notiCtrl.update)
   .delete(authCtrl.requireSignin, notiCtrl.deleteById)
 
 export default router
