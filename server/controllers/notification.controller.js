@@ -2,12 +2,18 @@ import Notification from '../models/notification.model'
 import errorHandler from '../helpers/dbErrorHandler'
 
 const create = async (req, res) => {
-    const { userId, drugId, time } = req.body
+    const { userId, drugs, start, end, eat_time, hour, minute, second, number_pill } = req.body
     const noti = new Notification(
         {
             user: userId,
-            drug: drugId,
-            time: time
+            drugs: drugs,
+            start: start,
+            end: end,
+            eat_time: eat_time,
+            hour: hour,
+            minute: minute,
+            second: second,
+            number_pill: number_pill
         }
     )
     try {

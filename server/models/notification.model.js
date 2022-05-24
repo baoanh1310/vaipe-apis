@@ -20,18 +20,23 @@ const NotiSchema = new mongoose.Schema({
         type: Number,
         default: 0,
     },
-    time: {
-        type: Date,
-        default: Date.now
+    hour: {
+        type: Number
+    },
+    minute: {
+        type: Number
+    },
+    second: {
+        type: Number
     },
     number_pill: {
         type: Number, // number of pill to take each time
         default: 1
     },
-    delay_time: {
-        type: Number, // e.g. user want to take medicine after notification 15 minutes
-        default: 0
-    },
+    // delay_time: {
+    //     type: Number, // e.g. user want to take medicine after notification 15 minutes
+    //     default: 0
+    // },
     created: {
         type: Date,
     },
