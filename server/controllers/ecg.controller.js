@@ -1,17 +1,17 @@
-import mongoose from 'mongoose'
 import Ecg from '../models/ecg.model'
 import errorHandler from '../helpers/dbErrorHandler'
 
 const create = async (req, res) => {
     const { name, value } = req.body
-    const img_path = req.file.path
-    let values = JSON.parse(value)
+    // const img_path = req.file.path
+    // let values = JSON.parse(value)
+    let values = value
     values = [...values]
     const ecg = new Ecg(
         {
             name: name,
             value: values,
-            img_path,
+            // img_path,
             user: req.auth.userId
         }
     )

@@ -1,14 +1,13 @@
-import mongoose from 'mongoose'
 import Oxy from '../models/oxy.model'
 import errorHandler from '../helpers/dbErrorHandler'
 
 const create = async (req, res) => {
     const { value } = req.body
-    const img_path = req.file.path
+    // const img_path = req.file.path
     const oxy = new Oxy(
         {
             value,
-            img_path,
+            // img_path,
             user: req.auth.userId
         }
     )

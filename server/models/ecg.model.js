@@ -9,9 +9,9 @@ const ECGSchema = new mongoose.Schema({
         type: Date,
         default: Date.now
     },
-    img_path: {
-        type: String
-    },
+    // img_path: {
+    //     type: String
+    // },
     name: {
         type: String,
         required: 'ECG name is required'

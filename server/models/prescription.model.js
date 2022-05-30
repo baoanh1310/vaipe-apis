@@ -13,9 +13,9 @@ const PrescriptionSchema = new mongoose.Schema({
         type: String,
         required: 'Prescription name is required'
     },
-    img_path: {
-        type: String
-    },
+    // img_path: {
+    //     type: String
+    // },
     user: {
         type: mongoose.Schema.Types.ObjectId,
         ref: "User"

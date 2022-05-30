@@ -1,18 +1,19 @@
-import mongoose from 'mongoose'
 import Prescription from '../models/prescription.model'
 import errorHandler from '../helpers/dbErrorHandler'
 
 const create = async (req, res) => {
     const { name, drugs } = req.body
-    const img_path = req.file.path
-    let values = JSON.parse(drugs)
+    // const img_path = req.file.path
+    // let values = JSON.parse(drugs)
+    console.log("drugs: ", drugs)
+    let values = drugs
     values = [...values]
-    console.log(values)
+    // console.log(values)
     const prescription = new Prescription(
         {
             name: name,
             drugs: values,
-            img_path,
+            // img_path,
             user: req.auth.userId
         }
     )

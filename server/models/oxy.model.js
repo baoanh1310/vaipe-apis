@@ -9,9 +9,9 @@ const OxySchema = new mongoose.Schema({
         type: Date,
         default: Date.now
     },
-    img_path: {
-        type: String
-    },
+    // img_path: {
+    //     type: String
+    // },
     user: {
         type: mongoose.Schema.Types.ObjectId,
         ref: "User"
