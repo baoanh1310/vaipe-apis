@@ -7,13 +7,7 @@ const WeekDaySchema = new mongoose.Schema({
     },
     weekDay: {
         type: Number
-    },
-    drugTakenInfo: [
-        {
-            type: mongoose.Schema.Types.ObjectId,
-            ref: "DrugTakenInfo"
-        }
-    ]
+    }
 })
 
 export default mongoose.model('WeekDay', WeekDaySchema)
