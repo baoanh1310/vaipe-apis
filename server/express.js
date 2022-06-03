@@ -12,7 +12,7 @@ import bloodRoutes from './routes/blood.routes'
 import oxyRoutes from './routes/oxy.routes'
 import temperatureRoutes from './routes/temperature.routes'
 import ecgRoutes from './routes/ecg.routes'
-import prescriptionRoutes from './routes/prescription.routes'
+import medicineReceiptRoutes from './routes/medicineReceipt.routes'
 import apiRoutes from './routes/docs.routes'
 import drugRoutes from './routes/drug.routes'
 import drugTakenRoutes from './routes/drugTaken.routes'
@@ -32,8 +32,8 @@ const app = express()
 // devBundle.compile(app)
 
 // parse body params and attache them to req.body
-app.use(bodyParser.json())
-app.use(bodyParser.urlencoded({ extended: true }))
+app.use(bodyParser.json({ limit: '50mb' }))
+app.use(bodyParser.urlencoded({ limit: '50mb', extended: true }))
 app.use(cookieParser())
 app.use(compress())
 // secure apps by setting various HTTP headers
@@ -51,7 +51,7 @@ app.use('/', bloodRoutes)
 app.use('/', oxyRoutes)
 app.use('/', temperatureRoutes)
 app.use('/', ecgRoutes)
-app.use('/', prescriptionRoutes)
+app.use('/', medicineReceiptRoutes)
 app.use('/', drugRoutes)
 app.use('/', drugTakenRoutes)
 app.use('/', prepRoutes)
