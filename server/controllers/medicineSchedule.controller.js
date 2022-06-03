@@ -32,7 +32,7 @@ const getSchedulesByUserId = async (req, res) => {
         schedules = [...schedules]
         let result = []
         for (let val of schedules) {
-            result.push({"created": val["created"], "symtoms": val["symtoms"], "diagnose": val["diagnose"]})
+            result.push({"created": val["created"], "symtoms": val["symtoms"], "diagnose": val["diagnose"], "userId": val["user"]})
         }
         let obj = {
             "appStatus": 0,
