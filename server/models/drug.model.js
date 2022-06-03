@@ -11,7 +11,8 @@ const DrugSchema = new mongoose.Schema({
     },
     isStandard: {
         type: Boolean,
-        required: 'You must specified this drug is standard or not'
+        required: 'You must specified this drug is standard or not',
+        default: false
     }
 })
 
