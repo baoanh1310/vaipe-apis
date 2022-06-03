@@ -6,7 +6,7 @@ const create = async (req, res) => {
     // const img_path = req.file.path
     // let values = JSON.parse(value)
     let values = value
-    // values = [...values]
+    values = [...values]
     const ecg = new Ecg(
         {
             name: name,

@@ -1,4 +1,4 @@
-import Prescription from '../models/prescription.model'
+import Receipt from '../models/medicineReceipt.model'
 import errorHandler from '../helpers/dbErrorHandler'
 
 const create = async (req, res) => {
@@ -9,7 +9,7 @@ const create = async (req, res) => {
     let values = drugs
     values = [...values]
     // console.log(values)
-    const prescription = new Prescription(
+    const receipt = new Receipt(
         {
             name: name,
             drugs: values,
@@ -18,10 +18,10 @@ const create = async (req, res) => {
         }
     )
     try {
-        await prescription.save()
+        await receipt.save()
         return res.status(200).json({
             appStatus: 0,
-            message: "Save new prescription successfully!"
+            message: "Save new receipt successfully!"
         })
     } catch (err) {
         console.log(err.message)
@@ -32,14 +32,14 @@ const create = async (req, res) => {
     }
 }
 
-const getStatsPrescription = async (req, res) => {
+const getStatsReceipt = async (req, res) => {
     try {
-        // let prescriptions = await Prescription.find(mongoose.Types.ObjectId(req.profile.userId))
-        let prescriptions = await Prescription.find({ user: req.auth.userId })
-        // let prescriptions = await Prescription.find(mongoose.Schema.Types.ObjectId(req.body.profile._id))
-        prescriptions = [...prescriptions]
+        // let receipts = await Receipt.find(mongoose.Types.ObjectId(req.profile.userId))
+        let receipts = await Receipt.find({ user: req.auth.userId })
+        // let receipts = await Receipt.find(mongoose.Schema.Types.ObjectId(req.body.profile._id))
+        receipts = [...receipts]
         let result = []
-        for (let val of prescriptions) {
+        for (let val of receipts) {
             result.push({"name": val['name'], "id": val['_id'], "created": val['created'], "drugs": val['drugs']})
         }
         let obj = {
@@ -61,17 +61,17 @@ const getStatsPrescription = async (req, res) => {
 const deleteById = async (req, res) => {
     const id = req.params.id
     try {
-        let prescription = await Prescription.findByIdAndRemove(id)
-        if (!prescription) {
+        let receipt = await Receipt.findByIdAndRemove(id)
+        if (!receipt) {
             return res.status(400).json({
                 appStatus: -1,
-                message: "Cannot delete not existed prescription"
+                message: "Cannot delete not existed receipt"
             })
         }
         return res.status(200).json({
             appStatus: 0,
-            message: "Delete prescription successfully!",
-            deletedItem: prescription
+            message: "Delete receipt successfully!",
+            deletedItem: receipt
         })
     } catch (err) {
         return res.status(400).json({
@@ -84,16 +84,16 @@ const deleteById = async (req, res) => {
 const getById = async (req, res) => {
     const id = req.params.id
     try {
-        let prescription = await Prescription.findById(id)
-        if (!prescription) {
+        let receipt = await Receipt.findById(id)
+        if (!receipt) {
             return res.status(400).json({
                 appStatus: -1,
-                message: "Prescription not found"
+                message: "Receipt not found"
             })
         }
         return res.status(200).json({
             appStatus: 0,
-            value: prescription
+            value: receipt
         })
     } catch (err) {
         return res.status(400).json({
@@ -105,7 +105,7 @@ const getById = async (req, res) => {
 
 export default {
     create,
-    getStatsPrescription,
+    getStatsReceipt,
     deleteById,
     getById
 }

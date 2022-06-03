@@ -1,9 +1,9 @@
 import mongoose from 'mongoose'
 
-const PrescriptionSchema = new mongoose.Schema({
+const MedicineReceiptSchema = new mongoose.Schema({
     drugs: {
         type: [Map],
-        required: 'Prescription info is required'
+        required: 'MedicineReceipt info is required'
     },
     created: {
         type: Date,
@@ -11,7 +11,7 @@ const PrescriptionSchema = new mongoose.Schema({
     },
     name: {
         type: String,
-        required: 'Prescription name is required'
+        required: 'MedicineReceipt name is required'
     },
     // img_path: {
     //     type: String
@@ -22,4 +22,4 @@ const PrescriptionSchema = new mongoose.Schema({
     }
 })
 
-export default mongoose.model('Prescription', PrescriptionSchema)
+export default mongoose.model('MedicineReceipt', MedicineReceiptSchema)

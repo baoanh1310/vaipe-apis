@@ -2,7 +2,7 @@ import mongoose from 'mongoose'
 
 const ECGSchema = new mongoose.Schema({
     value: {
-        type: Map,
+        type: [Number],
         required: 'ECG values are required'
     },
     created: {
