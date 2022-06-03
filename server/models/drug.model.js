@@ -8,6 +8,10 @@ const DrugSchema = new mongoose.Schema({
     info: {
         type: Map,
         required: 'Drug info is required'
+    },
+    isStandard: {
+        type: Boolean,
+        required: 'You must specified this drug is standard or not'
     }
 })
 
