@@ -21,21 +21,18 @@ const create = async (req, res) => {
     try {
         let takenTimeRecord = await takenTime.save()
         const takenTimeId = takenTimeRecord._id
-        console.log("Taken time: ", takenTimeRecord)
         let weekDayIds = []
         for (let day of weekDays) {
             let weekDay = await WeekDay.findOne({ 'weekDay': day })
-            console.log("weekDay: ", weekDay)
             weekDayIds.push(weekDay._id)
         }
-        console.log("weekDayIds: ", weekDayIds)
         
         const drugTakenInfo = new DrugTakenInfo(
             {
                 drug: mongoose.Types.ObjectId(drugId),
                 medicineSchedule: mongoose.Types.ObjectId(medicineScheduleId),
                 weekDays: weekDayIds,
-                takenTimeId: takenTimeId,
+                takenTime: mongoose.Types.ObjectId(takenTimeId),
                 startDate: startDate,
                 endDate: endDate,
                 numberPill: numberPill
@@ -72,12 +69,14 @@ const getDrugTakenInfoByUserId = async (req, res) => {
         for (let schedule of schedules) {
             scheduleIds.push(schedule._id)
         }
-        console.log("ScheduleIds: ", scheduleIds)
         let result = []
         for (let medicineScheduleId of scheduleIds) {
-            let drugTakenInfo = await DrugTakenInfo.findOne({'medicineSchedule': mongoose.Types.ObjectId(medicineScheduleId)})
-            console.log("Drugtakeninfo: ", drugTakenInfo)
-            result.push(drugTakenInfo)
+            let drugTakenInfos = await DrugTakenInfo.find({'medicineSchedule': mongoose.Types.ObjectId(medicineScheduleId)})
+            console.log("DrugTakenInfo: ", drugTakenInfos)
+            for (let info of drugTakenInfos) {
+                result.push(info)
+            }
+            
         }
         let obj = {
             "appStatus": 0,
@@ -94,7 +93,12 @@ const getDrugTakenInfoByUserId = async (req, res) => {
     }
 }
 
+const getDrugTakenInfoByDate = async (req, res) => {
+    
+}
+
 export default {
     create,
-    getDrugTakenInfoByUserId
+    getDrugTakenInfoByUserId,
+    getDrugTakenInfoByDate
 }
