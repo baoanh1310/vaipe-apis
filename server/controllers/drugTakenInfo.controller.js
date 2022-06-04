@@ -21,16 +21,19 @@ const create = async (req, res) => {
     try {
         let takenTimeRecord = await takenTime.save()
         const takenTimeId = takenTimeRecord._id
-        let weekDayIds = weekDays.map(async (day) => {
-            let weekDay = await WeekDay.find({ weekday: day })
-            return weekDay._id
-        })
+        console.log("Taken time: ", takenTimeRecord)
+        let weekDayIds = []
+        for (let day of weekDays) {
+            let weekDay = await WeekDay.findOne({ 'weekDay': day })
+            console.log("weekDay: ", weekDay)
+            weekDayIds.push(weekDay._id)
+        }
         console.log("weekDayIds: ", weekDayIds)
         
         const drugTakenInfo = new DrugTakenInfo(
             {
-                drugId: mongoose.Schema.Types.ObjectId(drugId),
-                medicineScheduleId: mongoose.Schema.Types.ObjectId(medicineScheduleId),
+                drug: mongoose.Types.ObjectId(drugId),
+                medicineSchedule: mongoose.Types.ObjectId(medicineScheduleId),
                 weekDays: weekDayIds,
                 takenTimeId: takenTimeId,
                 startDate: startDate,
@@ -65,13 +68,16 @@ const getDrugTakenInfoByUserId = async (req, res) => {
     try {
         let schedules = await MedicineSchedule.find({ user: req.auth.userId })
         schedules = [...schedules]
-        let scheduleIds = schedules.map((schedule) => {
-            schedule._id
-        })
+        let scheduleIds = []
+        for (let schedule of schedules) {
+            scheduleIds.push(schedule._id)
+        }
+        console.log("ScheduleIds: ", scheduleIds)
         let result = []
         for (let medicineScheduleId of scheduleIds) {
-            let drugTakenInfo = DrugTakenInfo.find({_id: medicineScheduleId})
-            infos.push(drugTakenInfo)
+            let drugTakenInfo = await DrugTakenInfo.findOne({'medicineSchedule': mongoose.Types.ObjectId(medicineScheduleId)})
+            console.log("Drugtakeninfo: ", drugTakenInfo)
+            result.push(drugTakenInfo)
         }
         let obj = {
             "appStatus": 0,

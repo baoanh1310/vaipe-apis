@@ -37,7 +37,7 @@ const getSchedulesByUserId = async (req, res) => {
             let drugs = await Drug.find({
                 '_id': { $in: val["drugs"]}
             })
-            result.push({"created": val["created"], "symtoms": val["symtoms"], "diagnose": val["diagnose"], "userId": val["user"], "drugs": drugs})
+            result.push({"id": val["_id"], "created": val["created"], "symtoms": val["symtoms"], "diagnose": val["diagnose"], "userId": val["user"], "drugs": drugs})
         }
         let obj = {
             "appStatus": 0,
