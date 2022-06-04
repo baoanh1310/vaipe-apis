@@ -13,7 +13,13 @@ const TakenTimeSchema = new mongoose.Schema({
     },
     beforeMeal: {
         type: Number, // 0: before meal, 1: after meal, 2: not specific
-    }
+    },
+    drugTakenInfo: [
+        {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: "DrugTakenTime"
+        }
+    ]
 })
 
 export default mongoose.model('TakenTime', TakenTimeSchema)

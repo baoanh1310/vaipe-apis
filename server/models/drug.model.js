@@ -13,6 +13,9 @@ const DrugSchema = new mongoose.Schema({
         type: Boolean,
         required: 'You must specified this drug is standard or not',
         default: false
+    },
+    img_path: {
+        type: String,
     }
 })
 

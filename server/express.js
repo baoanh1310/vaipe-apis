@@ -21,6 +21,7 @@ import notificationRoutes from './routes/notification.routes'
 import healthRoutes from './routes/health.routes'
 
 import medicineScheduleRoutes from './routes/medicineSchedule.routes'
+import drugTakenInfoRoutes from './routes/drugTakenInfo.routes'
 
 const swaggerUi = require('swagger-ui-express');
 const swaggerDocument = require('./swagger.json');
@@ -61,6 +62,7 @@ app.use('/', notificationRoutes)
 app.use('/', healthRoutes)
 
 app.use('/', medicineScheduleRoutes)
+app.use('/', drugTakenInfoRoutes)
 
 const swaggerOption = {
   swaggerOptions: {

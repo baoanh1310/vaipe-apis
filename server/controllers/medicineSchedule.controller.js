@@ -1,14 +1,16 @@
 import MedicineSchedule from '../models/medicineSchedule.model'
+import Drug from '../models/drug.model'
 import errorHandler from '../helpers/dbErrorHandler'
 
 const create = async (req, res) => {
-    const { symtoms, diagnose } = req.body
+    const { symtoms, diagnose, drugs } = req.body
     // const img_path = req.file.path
     const schedule = new MedicineSchedule(
         {
             symtoms,
             diagnose,
-            user: req.auth.userId
+            user: req.auth.userId,
+            drugs: drugs
         }
     )
     try {
@@ -32,7 +34,10 @@ const getSchedulesByUserId = async (req, res) => {
         schedules = [...schedules]
         let result = []
         for (let val of schedules) {
-            result.push({"created": val["created"], "symtoms": val["symtoms"], "diagnose": val["diagnose"], "userId": val["user"]})
+            let drugs = await Drug.find({
+                '_id': { $in: val["drugs"]}
+            })
+            result.push({"created": val["created"], "symtoms": val["symtoms"], "diagnose": val["diagnose"], "userId": val["user"], "drugs": drugs})
         }
         let obj = {
             "appStatus": 0,
