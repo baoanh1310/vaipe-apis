@@ -206,15 +206,11 @@ const getDrugTakenInfoByDate = async (req, res) => {
                                 newValue['beforeMeal'] = takenTimeObj['beforeMeal']
                                 let finalValue = JSON.parse(JSON.stringify(newValue))
                                 finalValue['wasTaken'] = false
-                                console.log('drugTakenInfoId: ', info._id)
-                                console.log('takenTimeId: ', takenTimeId)
-                                console.log('weekDayId: ', _weekDayId)
                                 let wasTaken = await DrugTakenHistory.findOne({
                                     'drugTakenInfoId': mongoose.Types.ObjectId(info._id),
                                     'takenTimeId': mongoose.Types.ObjectId(takenTimeId),
-                                    'weekDayId': mongoose.Types.ObjectId(_weekDayId)
+                                    'weekDayId': _weekDayId
                                 })
-                                console.log('WasTaken: ', wasTaken)
                                 if (wasTaken) {
                                     finalValue['wasTaken'] = true
                                 }

@@ -44,9 +44,22 @@ const create = async (req, res) => {
 
 const update = async (req, res) => {
     const id = req.params.id
+    const { weekDay } = req.body
+    let weekDayId
+    try {
+        let _weekDay = await WeekDay.findOne({ weekDay: weekDay })
+        weekDayId = _weekDay._id
+    } catch (err) {
+        console.log(err.message)
+        return res.status(400).json({
+            error: errorHandler.getErrorMessage(err)
+        })
+    }
+
     try {
         let drugTakenHistory = await DrugTakenHistory.findById(id)
-        drugTakenHistory = extend(drugTakenHistory, req.body)
+        // drugTakenHistory = extend(drugTakenHistory, req.body)
+        drugTakenHistory.weekDayId = weekDayId
         drugTakenHistory.updated = Date.now()
         await drugTakenHistory.save()
         
@@ -95,8 +108,31 @@ const getDrugTakenHistoryByUserId = async (req, res) => {
     }
 }
 
+const deleteById = async (req, res) => {
+    const id = req.params.id
+    try {
+        let history = await DrugTakenHistory.findByIdAndRemove(id)
+        if (!history) {
+            return res.status(400).json({
+                appStatus: -1,
+                message: "Cannot delete not existed history"
+            })
+        }
+        return res.status(200).json({
+            message: "Delete drug taken history successfully!",
+            deletedItem: history
+        })
+    } catch (err) {
+        return res.status(400).json({
+            appStatus: -1,
+            error: errorHandler.getErrorMessage(err)
+        })
+    }
+}
+
 export default {
     create,
     update,
-    getDrugTakenHistoryByUserId
+    getDrugTakenHistoryByUserId,
+    deleteById
 }

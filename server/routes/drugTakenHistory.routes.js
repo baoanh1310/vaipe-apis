@@ -11,5 +11,6 @@ router.route('/api/drugTakenHistory/')
 router.route('/api/drugTakenHistory/:id')
 //   .get(authCtrl.requireSignin, drugTakenInfoCtrl.getDrugTakenHistoryById)
     .put(authCtrl.requireSignin, drugTakenHistoryCtrl.update)
+    .delete(authCtrl.requireSignin, drugTakenHistoryCtrl.deleteById)
 
 export default router
