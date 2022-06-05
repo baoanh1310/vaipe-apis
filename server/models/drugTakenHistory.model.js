@@ -1,25 +1,28 @@
 import mongoose from 'mongoose'
 
-const DrugTakenInfoSchema = new mongoose.Schema({
+const DrugTakenHistorySchema = new mongoose.Schema({
     created: {
         type: Date,
         default: Date.now
     },
+    updated: {
+        type: Date
+    },
     date: {
         type: Date
     },
-    drugTakenInfo: {
-        type: mongoose.Schema.Types.ObjectId,
+    drugTakenInfoId: {
+        type: mongoose.Types.ObjectId,
         ref: "DrugTakenInfo"
     },
-    weekDay: {
-        type: mongoose.Schema.Types.ObjectId,
+    weekDayId: {
+        type: mongoose.Types.ObjectId,
         ref: "WeekDay"
     },
-    takenTime: {
-        type: mongoose.Schema.Types.ObjectId,
+    takenTimeId: {
+        type: mongoose.Types.ObjectId,
         ref: "TakenTime"
     }
 })
 
-export default mongoose.model('DrugTakenHistory', DrugTakenInfoSchema)
+export default mongoose.model('DrugTakenHistory', DrugTakenHistorySchema)

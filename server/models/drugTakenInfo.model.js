@@ -5,11 +5,11 @@ const DrugTakenInfoSchema = new mongoose.Schema({
         type: Date,
         default: Date.now
     },
-    drug: {
+    drugId: {
         type: mongoose.Schema.Types.ObjectId,
         ref: "Drug"
     },
-    medicineSchedule: {
+    medicineScheduleId: {
         type: mongoose.Schema.Types.ObjectId,
         ref: "MedicineSchedule"
     },
