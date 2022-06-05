@@ -13,7 +13,7 @@ const config = {
     jwtRefreshSecret: process.env.JWT_REFRESH_SECRET || REFRESH_TOKEN_PRIVATE_KEY,
     accessPublicKey: ACCESS_TOKEN_PUBLIC_KEY,
     refreshPublicKey: REFRESH_TOKEN_PUBLIC_KEY,
-    tokenLife: 3600, // 1h
+    tokenLife: 36000, // 10h
     refreshTokenLife: 604800, // 1 week 
     mongoUri: process.env.MONGODB_URI ||
       process.env.MONGO_HOST ||
