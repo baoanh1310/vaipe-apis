@@ -12,15 +12,15 @@ const DrugTakenHistorySchema = new mongoose.Schema({
         type: Date
     },
     drugTakenInfoId: {
-        type: mongoose.Types.ObjectId,
+        type: mongoose.Schema.Types.ObjectId,
         ref: "DrugTakenInfo"
     },
     weekDayId: {
-        type: mongoose.Types.ObjectId,
+        type: mongoose.Schema.Types.ObjectId,
         ref: "WeekDay"
     },
     takenTimeId: {
-        type: mongoose.Types.ObjectId,
+        type: mongoose.Schema.Types.ObjectId,
         ref: "TakenTime"
     }
 })

@@ -1,4 +1,5 @@
 import mongoose from 'mongoose'
+import WeekDay from '../models/weekDay.model'
 import MedicineSchedule from '../models/medicineSchedule.model'
 import DrugTakenInfo from '../models/drugTakenInfo.model'
 import DrugTakenHistory from '../models/drugTakenHistory.model'
@@ -6,12 +7,23 @@ import extend from 'lodash/extend'
 import errorHandler from '../helpers/dbErrorHandler'
 
 const create = async (req, res) => {
-    const { drugTakenInfoId, weekDayId, takenTimeId, date } = req.body
+    const { drugTakenInfoId, weekDay, takenTimeId, date } = req.body
+    let weekDayId
+    try {
+        let _weekDay = await WeekDay.findOne({ weekDay: weekDay })
+        weekDayId = _weekDay._id
+    } catch (err) {
+        console.log(err.message)
+        return res.status(400).json({
+            error: errorHandler.getErrorMessage(err)
+        })
+    }
 
     const drugTakenHistory = new DrugTakenHistory(
         {
             drugTakenInfoId: mongoose.Types.ObjectId(drugTakenInfoId),
-            weekDayId: mongoose.Types.ObjectId(weekDayId),
+            // weekDayId: mongoose.Types.ObjectId(weekDayId),
+            weekDayId: weekDayId,
             takenTimeId: mongoose.Types.ObjectId(takenTimeId),
             date: date
         }
