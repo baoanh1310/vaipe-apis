@@ -1,5 +1,6 @@
 import mongoose from 'mongoose'
 import WeekDay from '../models/weekDay.model'
+import TakenTime from '../models/takenTime.model'
 import MedicineSchedule from '../models/medicineSchedule.model'
 import DrugTakenInfo from '../models/drugTakenInfo.model'
 import DrugTakenHistory from '../models/drugTakenHistory.model'
@@ -40,6 +41,77 @@ const create = async (req, res) => {
             error: errorHandler.getErrorMessage(err)
         })
     }
+}
+
+const takeMedicine = async (req, res) => {
+    const { drugTakenInfoId, weekDay, hour, minute, date, wasTaken } = req.body
+    let weekDayId
+    try {
+        let _weekDay = await WeekDay.findOne({ weekDay: weekDay })
+        weekDayId = _weekDay._id
+    } catch (err) {
+        console.log(err.message)
+        return res.status(400).json({
+            error: errorHandler.getErrorMessage(err)
+        })
+    }
+
+    let takenTimeId
+    try {
+        let _takenTime = await TakenTime.findOne({ hour: hour, minute: minute })
+        takenTimeId = _takenTime._id
+    } catch (err) {
+        console.log(err.message)
+        return res.status(400).json({
+            error: errorHandler.getErrorMessage(err)
+        })
+    }
+    
+    let _date = new Date(date)
+    if (wasTaken == false) {
+        
+        const drugTakenHistory = new DrugTakenHistory(
+            {
+                drugTakenInfoId: mongoose.Types.ObjectId(drugTakenInfoId),
+                weekDayId: weekDayId,
+                takenTimeId: mongoose.Types.ObjectId(takenTimeId),
+                date: _date
+            }
+        )
+        try {
+            await drugTakenHistory.save()
+            return res.status(200).json({
+                appStatus: 0,
+                message: "Take medicine successfully!"
+            })
+        } catch (err) {
+            console.log(err.message)
+            return res.status(400).json({
+                error: errorHandler.getErrorMessage(err)
+            })
+        }
+    } else {
+        try {
+            let drugHistoryObj = await DrugTakenHistory.findOne({
+                drugTakenInfoId: mongoose.Types.ObjectId(drugTakenInfoId),
+                weekDayId: weekDayId,
+                takenTimeId: mongoose.Types.ObjectId(takenTimeId),
+                date: _date
+            })
+            let drugHistoryId = drugHistoryObj._id
+            await DrugTakenHistory.findByIdAndRemove(drugHistoryId)
+            return res.status(200).json({
+                appStatus: 0,
+                message: "Remove take medicine event successfully!"
+            })
+        } catch (err) {
+            console.log(err.message)
+            return res.status(400).json({
+                error: errorHandler.getErrorMessage(err)
+            })
+        }
+    }
+    
 }
 
 const update = async (req, res) => {
@@ -134,5 +206,6 @@ export default {
     create,
     update,
     getDrugTakenHistoryByUserId,
-    deleteById
+    deleteById,
+    takeMedicine
 }
