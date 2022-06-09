@@ -106,10 +106,10 @@ const getScheduleById = async (req, res) => {
 }
 
 const createMedicineSchedule = async (req, res) => {
-    const { symtoms, diagnose, drugTakenInfos } = req.body
+    const { symptoms, diagnose, drugTakenInfos } = req.body
     const schedule = new MedicineSchedule(
         {
-            symtoms,
+            symptoms,
             diagnose,
             user: req.auth.userId
         }
@@ -241,7 +241,6 @@ const getMedicineScheduleByDate = async (req, res) => {
                                 let wasTaken = await DrugTakenHistory.findOne({
                                     'drugTakenInfoId': mongoose.Types.ObjectId(info._id),
                                     'takenTimeId': mongoose.Types.ObjectId(takenTimeId),
-                                    'weekDayId': _weekDayId
                                 })
                                 if (wasTaken) {
                                     finalValue['wasTaken'] = true

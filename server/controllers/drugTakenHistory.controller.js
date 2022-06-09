@@ -44,17 +44,7 @@ const create = async (req, res) => {
 }
 
 const takeMedicine = async (req, res) => {
-    const { drugTakenInfoId, weekDay, hour, minute, date, wasTaken } = req.body
-    let weekDayId
-    try {
-        let _weekDay = await WeekDay.findOne({ weekDay: weekDay })
-        weekDayId = _weekDay._id
-    } catch (err) {
-        console.log(err.message)
-        return res.status(400).json({
-            error: errorHandler.getErrorMessage(err)
-        })
-    }
+    const { drugTakenInfoId, hour, minute, date, wasTaken } = req.body
 
     let takenTimeId
     try {
@@ -66,14 +56,13 @@ const takeMedicine = async (req, res) => {
             error: errorHandler.getErrorMessage(err)
         })
     }
-    
+
     let _date = new Date(date)
     if (wasTaken == false) {
         
         const drugTakenHistory = new DrugTakenHistory(
             {
                 drugTakenInfoId: mongoose.Types.ObjectId(drugTakenInfoId),
-                weekDayId: weekDayId,
                 takenTimeId: mongoose.Types.ObjectId(takenTimeId),
                 date: _date
             }
@@ -94,7 +83,6 @@ const takeMedicine = async (req, res) => {
         try {
             let drugHistoryObj = await DrugTakenHistory.findOne({
                 drugTakenInfoId: mongoose.Types.ObjectId(drugTakenInfoId),
-                weekDayId: weekDayId,
                 takenTimeId: mongoose.Types.ObjectId(takenTimeId),
                 date: _date
             })
