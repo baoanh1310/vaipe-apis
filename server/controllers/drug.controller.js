@@ -2,12 +2,11 @@ import Drug from '../models/drug.model'
 import errorHandler from '../helpers/dbErrorHandler'
 
 const create = async (req, res) => {
-    const { info, isStandard, img_path } = req.body
+    const { drugName, isStandard } = req.body
     const drug = new Drug(
         {
-            info: info,
-            isStandard: isStandard,
-            img_path: img_path
+            drugName: drugName,
+            isStandard: isStandard
         }
     )
     try {

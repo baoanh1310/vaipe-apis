@@ -9,8 +9,10 @@ const router = express.Router()
 router.param('userId', userCtrl.userByID)
 
 router.route('/api/medicineSchedule/')
-  .get(authCtrl.requireSignin, medicineScheduleCtrl.getSchedulesByUserId)
-  .post(authCtrl.requireSignin, medicineScheduleCtrl.create)
+  // .get(authCtrl.requireSignin, medicineScheduleCtrl.getSchedulesByUserId)
+  .get(authCtrl.requireSignin, medicineScheduleCtrl.getMedicineScheduleByDate)
+  // .post(authCtrl.requireSignin, medicineScheduleCtrl.create)
+  .post(authCtrl.requireSignin, medicineScheduleCtrl.createMedicineSchedule)
 
 router.route('/api/medicineSchedule/:id')
   .get(authCtrl.requireSignin, medicineScheduleCtrl.getScheduleById)

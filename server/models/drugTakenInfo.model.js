@@ -23,13 +23,19 @@ const DrugTakenInfoSchema = new mongoose.Schema({
         type: Number,
         default: 1
     },
+    drugImage: {
+        type: String
+    },
+    prefer: {
+        type: Number, // 0: before meal; 1: after meal; 2: doesn't matter
+    },
     weekDays: [
         {
             type: mongoose.Schema.Types.ObjectId,
             ref: "WeekDay"
         }
     ],
-    takenTime: [
+    takenTimes: [
         {
             type: mongoose.Schema.Types.ObjectId,
             ref: "TakenTime"
