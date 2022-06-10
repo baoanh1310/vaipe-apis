@@ -15,9 +15,6 @@ import ecgRoutes from './routes/ecg.routes'
 import medicineReceiptRoutes from './routes/medicineReceipt.routes'
 import apiRoutes from './routes/docs.routes'
 import drugRoutes from './routes/drug.routes'
-import drugTakenRoutes from './routes/drugTaken.routes'
-import prepRoutes from './routes/prep.routes'
-import notificationRoutes from './routes/notification.routes'
 import healthRoutes from './routes/health.routes'
 
 import medicineScheduleRoutes from './routes/medicineSchedule.routes'
@@ -57,9 +54,6 @@ app.use('/', temperatureRoutes)
 app.use('/', ecgRoutes)
 app.use('/', medicineReceiptRoutes)
 app.use('/', drugRoutes)
-app.use('/', drugTakenRoutes)
-app.use('/', prepRoutes)
-app.use('/', notificationRoutes)
 app.use('/', healthRoutes)
 
 app.use('/', medicineScheduleRoutes)
