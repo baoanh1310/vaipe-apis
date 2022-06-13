@@ -22,6 +22,10 @@ const DrugTakenHistorySchema = new mongoose.Schema({
     takenTimeId: {
         type: mongoose.Schema.Types.ObjectId,
         ref: "TakenTime"
+    },
+    wasTaken: {
+        type: Boolean,
+        default: false
     }
 })
 

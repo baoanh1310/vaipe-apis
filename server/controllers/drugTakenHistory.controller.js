@@ -122,15 +122,16 @@ const takeMedicines = async (req, res) => {
         }
 
         let _date = new Date(date)
+
+        const drugTakenHistory = await DrugTakenHistory.findOne(
+            {
+                drugTakenInfoId: mongoose.Types.ObjectId(drugTakenInfoId),
+                takenTimeId: mongoose.Types.ObjectId(takenTimeId),
+                date: _date
+            }
+        )
         if (wasTaken == false) {
-            
-            const drugTakenHistory = new DrugTakenHistory(
-                {
-                    drugTakenInfoId: mongoose.Types.ObjectId(drugTakenInfoId),
-                    takenTimeId: mongoose.Types.ObjectId(takenTimeId),
-                    date: _date
-                }
-            )
+            drugTakenHistory.wasTaken = true
             try {
                 await drugTakenHistory.save()
                 messages.push(`Taken medicine at ${hour}:${minute} success`)
@@ -141,14 +142,9 @@ const takeMedicines = async (req, res) => {
                 })
             }
         } else {
+            drugTakenHistory.wasTaken = false
             try {
-                let drugHistoryObj = await DrugTakenHistory.findOne({
-                    drugTakenInfoId: mongoose.Types.ObjectId(drugTakenInfoId),
-                    takenTimeId: mongoose.Types.ObjectId(takenTimeId),
-                    date: _date
-                })
-                let drugHistoryId = drugHistoryObj._id
-                await DrugTakenHistory.findByIdAndRemove(drugHistoryId)
+                await drugTakenHistory.save()
                 messages.push(`Remove take medicine history at ${hour}:${minute} success`)
             } catch (err) {
                 console.log(err.message)

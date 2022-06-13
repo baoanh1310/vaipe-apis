@@ -3,7 +3,7 @@ import Drug from '../models/drug.model'
 import DrugTakenInfo from '../models/drugTakenInfo.model'
 import DrugTakenHistory from '../models/drugTakenHistory.model'
 import TakenTime from '../models/takenTime.model'
-import WeekDay from '../models/weekDay.model'
+// import WeekDay from '../models/weekDay.model'
 import errorHandler from '../helpers/dbErrorHandler'
 import drugTakenInfoController from './drugTakenInfo.controller'
 import mongoose from 'mongoose'
@@ -121,56 +121,92 @@ const createMedicineSchedule = async (req, res) => {
         // save new documents to DrugTakenInfo collection
         for (let drugInfo of drugTakenInfos) {
             // console.log("Info: ", drugInfo)
-            let { drugId, drugName, drugImage, startDate, endDate, numberPill, weekDays, takenTimes, prefer } = drugInfo
-            let weekDayIds = []
-            for (let day of weekDays) {
-                let weekDay = await WeekDay.findOne({ 'weekDay': day })
-                weekDayIds.push(weekDay._id)
-            }
-            // console.log(weekDayIds)
+            // let { drugId, drugName, drugImage, startDate, endDate, numberPill, weekDays, takenTimes, prefer } = drugInfo
+            let { drugId, drugName, drugImage, startDate, endDate, numberPill, takenTimes, prefer } = drugInfo
             let takenTimeIds = []
             for (let time of takenTimes) {
                 let takenTime = await TakenTime.findOne({ 'hour': time['hour'], 'minute': time['minute'] })
                 takenTimeIds.push(takenTime._id)
             }
             // console.log(takenTimeIds)
-            if (drugId == "") {
-                let drug = new Drug(
-                    {
-                        drugName: drugName,
-                        drugImage: drugImage
-                    }
-                )
-                try {
-                    let drugObj = await drug.save()
-                    drugId = drugObj._id
-                    console.log("new drugId: ", drugId)
-                } catch (err) {
-                    return res.status(400).json({
-                        appStatus: -1,
-                        error: errorHandler.getErrorMessage(err)
-                    })
-                }
-            } else {
-                drugId = mongoose.Types.ObjectId(drugId)
+            // if (drugId == "") {
+            //     let drug
+            //     let drugSearch = await Drug.findOne({ drugName: drugName })
+            //     if (drugSearch) {
+            //         drugId = drugSearch._id
+            //     } else {
+            //         drug = new Drug(
+            //             {
+            //                 drugName: drugName,
+            //                 drugImage: drugImage
+            //             }
+            //         )
+            //         try {
+            //             let drugObj = await drug.save()
+            //             drugId = drugObj._id
+            //             console.log("new drugId: ", drugId)
+            //         } catch (err) {
+            //             return res.status(400).json({
+            //                 appStatus: -1,
+            //                 error: errorHandler.getErrorMessage(err)
+            //             })
+            //         }
+            //     }
+            // } else {
+            //     drugId = mongoose.Types.ObjectId(drugId)
+            // }
+
+            let drugSearch = await Drug.findOne({ drugName: drugName })
+            let isStandardDrug = false
+            if (drugSearch) {
+                isStandardDrug = true
             }
 
             let drugTakenInfoObj = new DrugTakenInfo(
                 {
                     medicineScheduleId: scheduleObj._id,
-                    drugId: drugId,
+                    // drugId: drugId,
+                    drugName: drugName,
                     drugImage: drugImage,
                     startDate: startDate,
                     endDate: endDate,
                     numberPill: numberPill,
                     prefer: prefer,
-                    weekDays: weekDayIds,
-                    takenTimes: takenTimeIds
+                    // weekDays: weekDayIds,
+                    takenTimes: takenTimeIds,
+                    isStandardDrug: isStandardDrug
                 }
             )
 
             try {
-                await drugTakenInfoObj.save()
+                let drugTakenInfo = await drugTakenInfoObj.save()
+
+                // save records to DrugTakenHistory table
+                let drugTakenInfoId = drugTakenInfo._id
+                let startDateObj = new Date(startDate)
+                let endDateObj = new Date(endDate)
+                for (let date = startDateObj; date <= endDateObj; date.setDate(date.getDate() + 1)) {
+                    for (let takenTimeId of takenTimeIds) {
+                        let drugTakenHistoryObj = new DrugTakenHistory(
+                            {
+                                drugTakenInfoId: drugTakenInfoId,
+                                date: date,
+                                takenTimeId: takenTimeId
+                            }
+                        )
+                        try {
+                            await drugTakenHistoryObj.save()
+                        } catch (err) {
+                            console.log(err.message)
+                            return res.status(400).json({
+                                appStatus: -1,
+                                error: errorHandler.getErrorMessage(err)
+                            })
+                        }
+                    }
+                    
+                }
+
             } catch (err) {
                 console.log(err.message)
                 return res.status(400).json({
@@ -213,41 +249,35 @@ const getMedicineScheduleByDate = async (req, res) => {
                     'startDate': { $lte: _date },
                     'endDate': { $gte: _date }
                 })
-                let _weekDay = _date.getDay() // Sunday: 0, Monday: 1, ...
+                // let _weekDay = _date.getDay() // Sunday: 0, Monday: 1, ...
                 for (let info of drugTakenInfos) {
-                    let _weekDays = info.weekDays
-                    for (let _weekDayId of _weekDays) {
-                        let _searchWeekDayObj = await WeekDay.findById(_weekDayId)
-                        let _searchWeekDay = _searchWeekDayObj.weekDay
-                        if (_searchWeekDay == _weekDay) {
-                            let value = {}
-                            value['weekDay'] = _weekDay
-                            value['numberPill'] = info.numberPill
-                            value['drugTakenInfoId'] = info._id
-                            value['medicineScheduleId'] = info.medicineScheduleId
-                            let _drug = await Drug.findById(info.drugId)
-                            let drug = JSON.parse(JSON.stringify(_drug))
-                            value['drugName'] = drug['drugName']
-                            value['drugImage'] = info['drugImage']
-                            value['prefer'] = info['prefer']
-                            
-                            for (let takenTimeId of info.takenTimes) {
-                                let takenTimeObj = await TakenTime.findById(takenTimeId)
-                                let newValue = JSON.parse(JSON.stringify(value))
-                                newValue['hour'] = takenTimeObj['hour']
-                                newValue['minute'] = takenTimeObj['minute']
-                                let finalValue = JSON.parse(JSON.stringify(newValue))
-                                finalValue['wasTaken'] = false
-                                let wasTaken = await DrugTakenHistory.findOne({
-                                    'drugTakenInfoId': mongoose.Types.ObjectId(info._id),
-                                    'takenTimeId': mongoose.Types.ObjectId(takenTimeId),
-                                })
-                                if (wasTaken) {
-                                    finalValue['wasTaken'] = true
-                                }
-                                values.push(finalValue)
-                            }
-                        }
+                    
+                    let value = {}
+                    // value['weekDay'] = _weekDay
+                    value['numberPill'] = info.numberPill
+                    value['drugTakenInfoId'] = info._id
+                    value['medicineScheduleId'] = info.medicineScheduleId
+                    // let _drug = await Drug.findById(info.drugId)
+                    // let drug = JSON.parse(JSON.stringify(_drug))
+                    // value['drugName'] = drug['drugName']
+                    value['drugName'] = info['drugName']
+                    value['drugImage'] = info['drugImage']
+                    value['prefer'] = info['prefer']
+                    
+                    for (let takenTimeId of info.takenTimes) {
+                        let takenTimeObj = await TakenTime.findById(takenTimeId)
+                        let newValue = JSON.parse(JSON.stringify(value))
+                        newValue['hour'] = takenTimeObj['hour']
+                        newValue['minute'] = takenTimeObj['minute']
+                        let finalValue = JSON.parse(JSON.stringify(newValue))
+                        finalValue['wasTaken'] = false
+                        let wasTaken = await DrugTakenHistory.findOne({
+                            'drugTakenInfoId': mongoose.Types.ObjectId(info._id),
+                            'takenTimeId': mongoose.Types.ObjectId(takenTimeId),
+                        })
+                        finalValue['wasTaken'] = wasTaken.wasTaken
+                        
+                        values.push(finalValue)
                     }
                 }
             } else {
@@ -274,11 +304,20 @@ const getMedicineScheduleByDate = async (req, res) => {
     }
 }
 
+const getNotStandardDrugsList = async (req, res) => {
+    // {
+    //     "value": [
+    //         { "drugName": "Unknown", "numberAppear": 10 }
+    //     ]
+    // }
+}
+
 export default {
     create,
     createMedicineSchedule,
     getSchedulesByUserId,
     getScheduleById,
     getMedicineScheduleByDate,
-    deleteById
+    deleteById,
+    getNotStandardDrugsList
 }
