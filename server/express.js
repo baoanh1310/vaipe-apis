@@ -60,6 +60,8 @@ app.use('/', medicineScheduleRoutes)
 app.use('/', drugTakenInfoRoutes)
 app.use('/', drugTakenHistoryRoutes)
 
+app.use(express.static('assets'))
+
 const swaggerOption = {
   swaggerOptions: {
     preauthorizeApiKey: true

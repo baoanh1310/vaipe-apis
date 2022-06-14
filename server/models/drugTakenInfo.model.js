@@ -19,10 +19,10 @@ const DrugTakenInfoSchema = new mongoose.Schema({
     endDate: {
         type: Date
     },
-    numberPill: {
-        type: Number,
-        default: 1
-    },
+    // numberPill: {
+    //     type: Number,
+    //     default: 1
+    // },
     drugName: {
         type: String,
     },
@@ -46,7 +46,13 @@ const DrugTakenInfoSchema = new mongoose.Schema({
             type: mongoose.Schema.Types.ObjectId,
             ref: "TakenTime"
         }
-    ]
+    ],
+    quantity: {
+        type: Number
+    },
+    unit: {
+        type: Number, // viên, gói, ống, ml, mg
+    }
 })
 
 export default mongoose.model('DrugTakenInfo', DrugTakenInfoSchema)

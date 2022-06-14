@@ -5,8 +5,9 @@ import DrugTakenHistory from '../models/drugTakenHistory.model'
 import TakenTime from '../models/takenTime.model'
 // import WeekDay from '../models/weekDay.model'
 import errorHandler from '../helpers/dbErrorHandler'
-import drugTakenInfoController from './drugTakenInfo.controller'
 import mongoose from 'mongoose'
+import fs from 'fs'
+import { v4 as uuidv4 } from 'uuid'
 
 const create = async (req, res) => {
     const { symtoms, diagnose, drugs } = req.body
@@ -121,59 +122,43 @@ const createMedicineSchedule = async (req, res) => {
         // save new documents to DrugTakenInfo collection
         for (let drugInfo of drugTakenInfos) {
             // console.log("Info: ", drugInfo)
-            // let { drugId, drugName, drugImage, startDate, endDate, numberPill, weekDays, takenTimes, prefer } = drugInfo
-            let { drugId, drugName, drugImage, startDate, endDate, numberPill, takenTimes, prefer } = drugInfo
+            let { drugId, drugName, drugImage, startDate, endDate, numberPill, takenTimes, prefer, quantity, unit } = drugInfo
             let takenTimeIds = []
             for (let time of takenTimes) {
                 let takenTime = await TakenTime.findOne({ 'hour': time['hour'], 'minute': time['minute'] })
                 takenTimeIds.push(takenTime._id)
             }
-            // console.log(takenTimeIds)
-            // if (drugId == "") {
-            //     let drug
-            //     let drugSearch = await Drug.findOne({ drugName: drugName })
-            //     if (drugSearch) {
-            //         drugId = drugSearch._id
-            //     } else {
-            //         drug = new Drug(
-            //             {
-            //                 drugName: drugName,
-            //                 drugImage: drugImage
-            //             }
-            //         )
-            //         try {
-            //             let drugObj = await drug.save()
-            //             drugId = drugObj._id
-            //             console.log("new drugId: ", drugId)
-            //         } catch (err) {
-            //             return res.status(400).json({
-            //                 appStatus: -1,
-            //                 error: errorHandler.getErrorMessage(err)
-            //             })
-            //         }
-            //     }
-            // } else {
-            //     drugId = mongoose.Types.ObjectId(drugId)
-            // }
 
-            let drugSearch = await Drug.findOne({ drugName: drugName })
             let isStandardDrug = false
-            if (drugSearch) {
+            // let drugSearch = await Drug.findOne({ drugName: drugName })
+            // if (drugSearch) {
+            //     isStandardDrug = true
+            // }
+            if (drugId.length > 0) {
                 isStandardDrug = true
             }
+
+            // save uploaded image if drugImage != ""
+            drugImage = drugImage.split(';base64,').pop()
+            let img_name =  uuidv4().toString() + ".png"
+            let img_path = '/root/baoanh/vaipe-apis/assets/' + img_name
+            let img_url = 'http://103.226.249.176:5656/' + img_name
+            fs.writeFile(img_path, drugImage, { encoding: 'base64' }, (err) => console.log("Write image success"))
 
             let drugTakenInfoObj = new DrugTakenInfo(
                 {
                     medicineScheduleId: scheduleObj._id,
                     // drugId: drugId,
                     drugName: drugName,
-                    drugImage: drugImage,
+                    drugImage: img_url,
                     startDate: startDate,
                     endDate: endDate,
                     numberPill: numberPill,
                     prefer: prefer,
                     // weekDays: weekDayIds,
                     takenTimes: takenTimeIds,
+                    quantity: quantity,
+                    unit: unit,
                     isStandardDrug: isStandardDrug
                 }
             )
@@ -263,6 +248,8 @@ const getMedicineScheduleByDate = async (req, res) => {
                     value['drugName'] = info['drugName']
                     value['drugImage'] = info['drugImage']
                     value['prefer'] = info['prefer']
+                    value['quantity'] = info['quantity']
+                    value['unit'] = info['unit']
                     
                     for (let takenTimeId of info.takenTimes) {
                         let takenTimeObj = await TakenTime.findById(takenTimeId)
