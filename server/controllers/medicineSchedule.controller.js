@@ -267,6 +267,7 @@ const getMedicineScheduleByDate = async (req, res) => {
                         let wasTaken = await DrugTakenHistory.findOne({
                             'drugTakenInfoId': mongoose.Types.ObjectId(info._id),
                             'takenTimeId': mongoose.Types.ObjectId(takenTimeId),
+                            'date': _date
                         })
                         finalValue['wasTaken'] = wasTaken.wasTaken
                         
