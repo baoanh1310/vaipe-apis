@@ -1,10 +1,6 @@
 import mongoose from 'mongoose'
 
 const MedicineScheduleSchema = new mongoose.Schema({
-    // drugs: {
-    //     type: [mongoose.Schema.Types.ObjectId], // list drugId
-    //     required: 'Medicine Schedule info is required'
-    // },
     createdAt: {
         type: Date,
         default: Date.now
@@ -15,7 +11,10 @@ const MedicineScheduleSchema = new mongoose.Schema({
     diagnose: {
         type: String,
     },
-    img_path: {
+    medicineScheduleImage: {
+        type: String
+    },
+    medicineScheduleName: {
         type: String
     },
     user: {

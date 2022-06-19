@@ -107,11 +107,35 @@ const getScheduleById = async (req, res) => {
 }
 
 const createMedicineSchedule = async (req, res) => {
-    const { symptoms, diagnose, drugTakenInfos } = req.body
-    const schedule = new MedicineSchedule(
+    let { symptoms, diagnose, medicineScheduleName, medicineScheduleImage, drugTakenInfos } = req.body
+
+    // save uploaded image if medicineScheduleImage != ""
+    let medicine_img_name = ""
+    let medicine_img_path = ""
+    let medicine_img_url = ""
+    if (medicineScheduleImage && medicineScheduleImage.length > 0) {
+        medicineScheduleImage = medicineScheduleImage.split(';base64,').pop()
+        medicine_img_name =  uuidv4().toString() + "icebear.png"
+        medicine_img_path = '/root/baoanh/vaipe-apis/assets/' + medicine_img_name
+        medicine_img_url = 'http://103.226.249.176:5656/' + medicine_img_name
+        try {
+            fs.writeFile(medicine_img_path, medicineScheduleImage, { encoding: 'base64' }, (err) => console.log("Write medicine image success"))
+            
+        } catch (err) {
+            console.log("Cannot write medicine image file")
+            return res.status(400).json({
+                appStatus: -1,
+                error: errorHandler.getErrorMessage(err)
+            })
+        }
+    } 
+
+    let schedule = new MedicineSchedule(
         {
-            symptoms,
-            diagnose,
+            symptoms: symptoms,
+            diagnose: diagnose,
+            medicineScheduleName: medicineScheduleName,
+            medicineScheduleImage: medicine_img_url,
             user: req.auth.userId
         }
     )
@@ -142,13 +166,14 @@ const createMedicineSchedule = async (req, res) => {
             let img_name = ""
             let img_path = ""
             let img_url = ""
-            if (drugImage.length > 0) {
+            if (drugImage && drugImage.length > 0) {
                 drugImage = drugImage.split(';base64,').pop()
                 img_name =  uuidv4().toString() + ".png"
                 img_path = '/root/baoanh/vaipe-apis/assets/' + img_name
                 img_url = 'http://103.226.249.176:5656/' + img_name
                 fs.writeFile(img_path, drugImage, { encoding: 'base64' }, (err) => console.log("Write image success"))
             } 
+            console.log("Drug image url: ", img_url)
 
             let drugTakenInfoObj = new DrugTakenInfo(
                 {
@@ -320,6 +345,8 @@ const getPrescriptionsList = async (req, res) => {
             let value = {}
             value['diagnose'] = diagnose
             value['createdAt'] = schedules[i].createdAt
+            value['medicineScheduleName'] = schedules[i].medicineScheduleName
+            value['medicineScheduleImage'] = schedules[i].medicineScheduleImage
             value['drugTakenInfos'] = []
             drugTakenInfos = await DrugTakenInfo.find({'medicineScheduleId': mongoose.Types.ObjectId(medicineScheduleId)})
             let endDateList = [] // for finding latest date of current medicine schedule
