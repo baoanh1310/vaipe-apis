@@ -107,57 +107,65 @@ const takeMedicines = async (req, res) => {
     const histories = req.body.values
 
     let messages = []
-    for (let history of histories) {
-        let { drugTakenInfoId, hour, minute, date, wasTaken } = history
-
-        let takenTimeId
-        try {
-            let _takenTime = await TakenTime.findOne({ hour: hour, minute: minute })
-            takenTimeId = _takenTime._id
-        } catch (err) {
-            console.log(err.message)
-            return res.status(400).json({
-                error: errorHandler.getErrorMessage(err)
-            })
-        }
-
-        let _date = new Date(date)
-
-        const drugTakenHistory = await DrugTakenHistory.findOne(
-            {
-                drugTakenInfoId: mongoose.Types.ObjectId(drugTakenInfoId),
-                takenTimeId: mongoose.Types.ObjectId(takenTimeId),
-                date: _date
-            }
-        )
-        if (wasTaken == false) {
-            drugTakenHistory.wasTaken = true
+    try {
+        for (let history of histories) {
+            let { drugTakenInfoId, hour, minute, date, wasTaken } = history
+    
+            let takenTimeId
             try {
-                await drugTakenHistory.save()
-                messages.push(`Taken medicine at ${hour}:${minute} success`)
+                let _takenTime = await TakenTime.findOne({ hour: hour, minute: minute })
+                takenTimeId = _takenTime._id
             } catch (err) {
                 console.log(err.message)
                 return res.status(400).json({
                     error: errorHandler.getErrorMessage(err)
                 })
             }
-        } else {
-            drugTakenHistory.wasTaken = false
-            try {
-                await drugTakenHistory.save()
-                messages.push(`Remove take medicine history at ${hour}:${minute} success`)
-            } catch (err) {
-                console.log(err.message)
-                return res.status(400).json({
-                    error: errorHandler.getErrorMessage(err)
-                })
+    
+            let _date = new Date(date)
+    
+            const drugTakenHistory = await DrugTakenHistory.findOne(
+                {
+                    drugTakenInfoId: mongoose.Types.ObjectId(drugTakenInfoId),
+                    takenTimeId: mongoose.Types.ObjectId(takenTimeId),
+                    date: _date
+                }
+            )
+            if (wasTaken == true) {
+                drugTakenHistory.wasTaken = true
+                try {
+                    await drugTakenHistory.save()
+                    messages.push(`Taken medicine at ${hour}:${minute} success`)
+                } catch (err) {
+                    console.log(err.message)
+                    return res.status(400).json({
+                        error: errorHandler.getErrorMessage(err)
+                    })
+                }
+            } else {
+                drugTakenHistory.wasTaken = false
+                try {
+                    await drugTakenHistory.save()
+                    messages.push(`Remove take medicine history at ${hour}:${minute} success`)
+                } catch (err) {
+                    console.log(err.message)
+                    return res.status(400).json({
+                        error: errorHandler.getErrorMessage(err)
+                    })
+                }
             }
         }
+        return res.status(200).json({
+            appStatus: 0,
+            messages: messages
+        })
+    } catch (err) {
+        console.log(err.message)
+        return res.status(400).json({
+            error: errorHandler.getErrorMessage(err)
+        })
     }
-    return res.status(200).json({
-        appStatus: 0,
-        messages: messages
-    })
+    
 }
 
 const update = async (req, res) => {

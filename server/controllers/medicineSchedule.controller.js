@@ -139,11 +139,16 @@ const createMedicineSchedule = async (req, res) => {
             }
 
             // save uploaded image if drugImage != ""
-            drugImage = drugImage.split(';base64,').pop()
-            let img_name =  uuidv4().toString() + ".png"
-            let img_path = '/root/baoanh/vaipe-apis/assets/' + img_name
-            let img_url = 'http://103.226.249.176:5656/' + img_name
-            fs.writeFile(img_path, drugImage, { encoding: 'base64' }, (err) => console.log("Write image success"))
+            let img_name = ""
+            let img_path = ""
+            let img_url = ""
+            if (drugImage.length > 0) {
+                drugImage = drugImage.split(';base64,').pop()
+                img_name =  uuidv4().toString() + ".png"
+                img_path = '/root/baoanh/vaipe-apis/assets/' + img_name
+                img_url = 'http://103.226.249.176:5656/' + img_name
+                fs.writeFile(img_path, drugImage, { encoding: 'base64' }, (err) => console.log("Write image success"))
+            } 
 
             let drugTakenInfoObj = new DrugTakenInfo(
                 {
@@ -228,6 +233,7 @@ const getMedicineScheduleByDate = async (req, res) => {
         for (let medicineScheduleId of scheduleIds) {
             let drugTakenInfos
             if (date) {
+                console.log("Get schedule by date, Date: ", date)
                 let _date = new Date(date)
                 drugTakenInfos = await DrugTakenInfo.find({
                     'medicineScheduleId': mongoose.Types.ObjectId(medicineScheduleId),
@@ -281,6 +287,7 @@ const getMedicineScheduleByDate = async (req, res) => {
                 "result": result
             }
         }
+        console.log("Result: ", result)
         res.json(obj)
     } catch (err) {
         console.log(err.message)
@@ -299,6 +306,55 @@ const getNotStandardDrugsList = async (req, res) => {
     // }
 }
 
+const getPrescriptionsList = async (req, res) => {
+    try {
+        let schedules = await MedicineSchedule.find({ user: req.auth.userId })
+        schedules = [...schedules]
+        let result = {}
+        let values = []
+        let drugTakenInfos
+        for (let i = 0; i < schedules.length; i++) {
+            let medicineScheduleId = schedules[i]._id
+            let diagnose = schedules[i].diagnose
+            let value = {}
+            value['diagnose'] = diagnose
+            value['createdAt'] = schedules[i].createdAt
+            value['drugTakenInfos'] = []
+            drugTakenInfos = await DrugTakenInfo.find({'medicineScheduleId': mongoose.Types.ObjectId(medicineScheduleId)})
+            let endDateList = [] // for finding latest date of current medicine schedule
+            for (let info of drugTakenInfos) {
+                let prep = JSON.parse(JSON.stringify(info))
+                endDateList.push(new Date(info['endDate']))
+                prep['takenTimes'] = []
+                for (let takenTimeId of info.takenTimes) {
+                    let takenTimeObj = await TakenTime.findById(takenTimeId)
+                    prep['takenTimes'].push({ hour: takenTimeObj['hour'], minute: takenTimeObj['minute']})
+                }
+                value['drugTakenInfos'].push(prep)
+            }
+            let latestEndDate = new Date(Math.max.apply(null, endDateList))
+            let isCompleted = latestEndDate < Date.now()
+            value['isCompleted'] = isCompleted
+            values.push(value)
+        }
+        result["values"] = values
+        let obj = {
+            "appStatus": 0,
+            "data": {
+                "result": result
+            }
+        }
+        res.json(obj)
+        
+    } catch (err) {
+        console.log(err.message)
+        return res.status(400).json({
+            appStatus: -1,
+            error: errorHandler.getErrorMessage(err)
+        })
+    }
+}
+
 export default {
     create,
     createMedicineSchedule,
@@ -306,5 +362,6 @@ export default {
     getScheduleById,
     getMedicineScheduleByDate,
     deleteById,
-    getNotStandardDrugsList
+    getNotStandardDrugsList,
+    getPrescriptionsList
 }

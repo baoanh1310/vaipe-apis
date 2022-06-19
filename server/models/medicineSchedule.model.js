@@ -5,7 +5,7 @@ const MedicineScheduleSchema = new mongoose.Schema({
     //     type: [mongoose.Schema.Types.ObjectId], // list drugId
     //     required: 'Medicine Schedule info is required'
     // },
-    created: {
+    createdAt: {
         type: Date,
         default: Date.now
     },
