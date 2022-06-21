@@ -347,11 +347,21 @@ const getPrescriptionsList = async (req, res) => {
             value['createdAt'] = schedules[i].createdAt
             value['medicineScheduleName'] = schedules[i].medicineScheduleName
             value['medicineScheduleImage'] = schedules[i].medicineScheduleImage
+            value['medicineScheduleId'] = medicineScheduleId
             value['drugTakenInfos'] = []
             drugTakenInfos = await DrugTakenInfo.find({'medicineScheduleId': mongoose.Types.ObjectId(medicineScheduleId)})
             let endDateList = [] // for finding latest date of current medicine schedule
             for (let info of drugTakenInfos) {
-                let prep = JSON.parse(JSON.stringify(info))
+                // let prep = JSON.parse(JSON.stringify(info))
+                let prep = {}
+                prep['drugTakenInfoId'] = info['_id']
+                prep['drugName'] = info['drugName']
+                prep['drugImage'] = info['drugImage']
+                prep['startDate'] = info['startDate']
+                prep['endDate'] = info['endDate']
+                prep['prefer'] = info['prefer']
+                prep['quantity'] = info['quantity']
+                prep['unit'] = info['unit']
                 endDateList.push(new Date(info['endDate']))
                 prep['takenTimes'] = []
                 for (let takenTimeId of info.takenTimes) {
@@ -361,6 +371,7 @@ const getPrescriptionsList = async (req, res) => {
                 value['drugTakenInfos'].push(prep)
             }
             let latestEndDate = new Date(Math.max.apply(null, endDateList))
+            latestEndDate.setDate(latestEndDate.getDate() + 1)
             let isCompleted = latestEndDate < Date.now()
             value['isCompleted'] = isCompleted
             values.push(value)
