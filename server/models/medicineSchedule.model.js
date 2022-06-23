@@ -5,6 +5,9 @@ const MedicineScheduleSchema = new mongoose.Schema({
         type: Date,
         default: Date.now
     },
+    updatedAt: {
+        type: Date,
+    },
     symptoms: {
         type: String,
     },
