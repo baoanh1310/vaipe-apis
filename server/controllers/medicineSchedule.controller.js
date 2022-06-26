@@ -240,12 +240,10 @@ const createMedicineSchedule = async (req, res) => {
 }
 
 const updateMedicineSchedule = async (req, res) => {
-    let { symptoms, diagnose, medicineScheduleName, medicineScheduleImage, drugTakenInfos } = req.body
-
-    const id = req.params.id
+    let { symptoms, diagnose, medicineScheduleId, medicineScheduleName, medicineScheduleImage, drugTakenInfos } = req.body
 
     try {
-        let schedule = await MedicineSchedule.findById(id)
+        let schedule = await MedicineSchedule.findById(medicineScheduleId)
         schedule.symptoms = symptoms
         schedule.diagnose = diagnose
         schedule.medicineScheduleName = medicineScheduleName
@@ -370,37 +368,41 @@ const updateMedicineSchedule = async (req, res) => {
                     })
                     console.log("Today: ", todayHistoryObjs.length)
                     
-                    // remove (if exists) records in DrugTakenHistory table which have date is today and takenTime > now()
+                    // remove (if exists) records in DrugTakenHistory table which have date is today (and takenTime > now())
                     for (let todayObj of todayHistoryObjs) {
                         let todayTakenTimeId = todayObj.takenTimeId
                         let takenTimeObj = await TakenTime.findById(todayTakenTimeId)
                         let now = new Date()
-                        if (takenTimeObj.hour < now.getHours()) {
-                            continue
-                        } else if (takenTimeObj.hour == now.getHours()) {
-                            if (takenTimeObj.minute < now.getMinutes()) {
-                                continue
-                            } else {
-                                await DrugTakenHistory.deleteOne({
-                                    takenTimeId: todayTakenTimeId,
-                                    date: today,
-                                    drugTakenInfoId: drugTakenInfoId
-                                })
-                            }
-                        } else {
-                            await DrugTakenHistory.deleteOne({
-                                takenTimeId: todayTakenTimeId,
-                                date: today,
-                                drugTakenInfoId: drugTakenInfoId
-                            })
-                        }
+                        // if (takenTimeObj.hour < now.getHours()) {
+                        //     continue
+                        // } else if (takenTimeObj.hour == now.getHours()) {
+                        //     if (takenTimeObj.minute < now.getMinutes()) {
+                        //         continue
+                        //     } else {
+                        //         await DrugTakenHistory.deleteOne({
+                        //             takenTimeId: todayTakenTimeId,
+                        //             date: today,
+                        //             drugTakenInfoId: drugTakenInfoId
+                        //         })
+                        //     }
+                        // } else {
+                        //     await DrugTakenHistory.deleteOne({
+                        //         takenTimeId: todayTakenTimeId,
+                        //         date: today,
+                        //         drugTakenInfoId: drugTakenInfoId
+                        //     })
+                        // }
+                        await DrugTakenHistory.deleteMany({
+                            date: today,
+                            drugTakenInfoId: drugTakenInfoId
+                        })
                     }
 
-                    // add new records to DrugTakenHistory table which have date is today and takenTime > now()
+                    // add new records to DrugTakenHistory table which have date is today (and takenTime > now())
                     for (let takenTimeId of takenTimeIds) {
                         let takenTimeObj = await TakenTime.findById(takenTimeId)
                         let now = new Date()
-                        if (takenTimeObj.hour > now.getHours() || (takenTimeObj.hour == now.getHours() && takenTimeObj.minute > now.getMinutes())) {
+                        // if (takenTimeObj.hour > now.getHours() || (takenTimeObj.hour == now.getHours() && takenTimeObj.minute > now.getMinutes())) {
                             let drugTakenHistoryObj = new DrugTakenHistory(
                                 {
                                     drugTakenInfoId: drugTakenInfoId,
@@ -418,7 +420,7 @@ const updateMedicineSchedule = async (req, res) => {
                                     error: errorHandler.getErrorMessage(err)
                                 })
                             }
-                        }
+                        // }
                     }
 
                 } catch (err) {
@@ -439,7 +441,7 @@ const updateMedicineSchedule = async (req, res) => {
         } 
         return res.status(200).json({
             appStatus: 0,
-            message: `Update medicine schedule ${id} successfully!`
+            message: `Update medicine schedule ${medicineScheduleId} successfully!`
         })
 
     } catch (err) {
@@ -563,6 +565,7 @@ const getPrescriptionsList = async (req, res) => {
             let diagnose = schedules[i].diagnose
             let value = {}
             value['diagnose'] = diagnose
+            value['symptoms'] = schedules[i].symptoms
             value['createdAt'] = schedules[i].createdAt
             value['medicineScheduleName'] = schedules[i].medicineScheduleName
             value['medicineScheduleImage'] = schedules[i].medicineScheduleImage
