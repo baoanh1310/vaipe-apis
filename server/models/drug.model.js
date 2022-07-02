@@ -48,13 +48,25 @@ const DrugSchema = new mongoose.Schema({
         type: String,
     },
     standard: {
-        type: String,
+        type: String, // tieu chuan
     },
     drugType: {
         type: String,
     },
     drugNum: {
         type: String,
+    },
+    guide: {
+        type: String,
+    },
+    warning: {
+        type: String,
+    },
+    apothecary: {
+        type: String, // dang bao che
+    },
+    package: {
+        type: String, // cach dong goi
     }
 })
 

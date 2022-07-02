@@ -27,6 +27,25 @@ const getById = async (req, res) => {
     const id = req.params.id
     try {
         let drug = await Drug.findById(id)
+        let value = {}
+        value['apothecary'] = drug['apothecary']
+        value['category'] = drug['category']
+        value['country'] = drug['country']
+        value['drugName'] = drug['drugName']
+        value['drugImage'] = drug['drugImage'] != null ? drug['drugImage'] : ""
+        value['drugType'] = drug['drugType']
+        value['expired'] = parseInt(drug['expired'].split(' ')[0])
+        value['guide'] = drug['guide'] != null ? drug['guide'] : ""
+        value['registerCode'] = drug['registerCode']
+        value['registerCompany'] = drug['registerCompany']
+        value['registerAddress'] = drug['registerAddress']
+        value['standard'] = drug['standard']
+        value['productCompanyCode'] = drug['productCompanyCode']
+        value['warning'] = drug['warning'] != null ? drug['warning'] : ""
+
+        let drugProperties = drug['drugProperties'].split(', ')
+        value['drugProperties'] = drugProperties
+
         if (!drug) {
             return res.status(400).json({
                 appStatus: -1,
@@ -35,7 +54,7 @@ const getById = async (req, res) => {
         }
         return res.status(200).json({
             appStatus: 0,
-            value: drug
+            value: value
         })
     } catch (err) {
         return res.status(400).json({

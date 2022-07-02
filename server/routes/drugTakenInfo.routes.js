@@ -6,7 +6,7 @@ const router = express.Router()
 
 router.route('/api/drugTakenInfo/')
   // .get(authCtrl.requireSignin, drugTakenInfoCtrl.getDrugTakenInfoByUserId)
-  .get(authCtrl.requireSignin, drugTakenInfoCtrl.getDrugTakenInfoByDate)
+  .get(authCtrl.requireSignin, drugTakenInfoCtrl.getDrugTakenInfos)
   .post(authCtrl.requireSignin, drugTakenInfoCtrl.create)
 
 router.route('/api/drugTakenInfo/:id')

@@ -243,9 +243,66 @@ const getDrugTakenInfoByDate = async (req, res) => {
     }
 }
 
+const getDrugTakenInfos = async (req, res) => {
+    try {
+        let schedules = await MedicineSchedule.find({ user: req.auth.userId })
+        schedules = [...schedules]
+        let scheduleIds = []
+        for (let schedule of schedules) {
+            scheduleIds.push(schedule._id)
+        }
+        let result = {}
+        let values = []
+        for (let medicineScheduleId of scheduleIds) {
+            let drugTakenInfos = await DrugTakenInfo.find({
+                'medicineScheduleId': mongoose.Types.ObjectId(medicineScheduleId)
+            })
+
+            for (let info of drugTakenInfos) {
+                    
+                let value = {}
+                value['numberPill'] = info.numberPill
+                value['drugTakenInfoId'] = info._id
+                value['medicineScheduleId'] = info.medicineScheduleId
+                value['drugName'] = info['drugName']
+                value['drugImage'] = info['drugImage']
+                value['prefer'] = info['prefer']
+                value['quantity'] = info['quantity']
+                value['unit'] = info['unit']
+                value['startDate'] = info['startDate']
+                value['endDate'] = info['endDate']
+                value['takenTimes'] = []
+
+                let takenTimes = info['takenTimes']
+                for (let takenTimeId of takenTimes) {
+                    let takenTimeObj = await TakenTime.findById(takenTimeId)
+                    value['takenTimes'].push({ 'hour': takenTimeObj['hour'], 'minute': takenTimeObj['minute'] })
+                }
+
+                values.push(value)
+            }
+        }
+        result["values"] = values
+        let obj = {
+            "appStatus": 0,
+            "data": {
+                "result": result
+            }
+        }
+        res.json(obj)
+
+    } catch (err) {
+        return res.status(400).json({
+            appStatus: -1,
+            error: errorHandler.getErrorMessage(err)
+        })
+    }
+}
+
 export default {
     create,
     getDrugTakenInfoByUserId,
     getDrugTakenInfoByDate,
-    getDrugTakenInfoById
+    getDrugTakenInfoById,
+    getDrugTakenInfos
 }
