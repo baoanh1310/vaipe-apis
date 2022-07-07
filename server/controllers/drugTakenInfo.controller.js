@@ -259,6 +259,8 @@ const getDrugTakenInfos = async (req, res) => {
             })
 
             for (let info of drugTakenInfos) {
+
+                let drugObj = await Drug.findOne({ 'drugName': info['drugName']})
                     
                 let value = {}
                 value['numberPill'] = info.numberPill
@@ -278,6 +280,8 @@ const getDrugTakenInfos = async (req, res) => {
                     let takenTimeObj = await TakenTime.findById(takenTimeId)
                     value['takenTimes'].push({ 'hour': takenTimeObj['hour'], 'minute': takenTimeObj['minute'] })
                 }
+                value['drugId'] = drugObj ? drugObj._id : ""
+                // value['drugId'] = "0x32032932039"
 
                 values.push(value)
             }
@@ -292,6 +296,7 @@ const getDrugTakenInfos = async (req, res) => {
         res.json(obj)
 
     } catch (err) {
+        console.log(err)
         return res.status(400).json({
             appStatus: -1,
             error: errorHandler.getErrorMessage(err)

@@ -52,9 +52,12 @@ const getById = async (req, res) => {
                 message: "Drug not found"
             })
         }
+        let obj = {
+            "result": value
+        }
         return res.status(200).json({
             appStatus: 0,
-            value: value
+            data: obj
         })
     } catch (err) {
         return res.status(400).json({
