@@ -1,21 +1,21 @@
-import Blood from '../models/blood.model'
+import HeartRate from '../models/heartRate.model'
 import errorHandler from '../helpers/dbErrorHandler'
 
 const create = async (req, res) => {
-    const { high, low } = req.body
+    const { value } = req.body
     // const img_path = req.file.path
-    const blood = new Blood(
+    const heartRate = new HeartRate(
         {
-            high,
-            low,
+            value,
+            // img_path,
             user: req.auth.userId
         }
     )
-    console.log("blood: ", blood)
+    console.log("heart rate: ", heartRate)
     try {
-        await blood.save()
+        await heartRate.save()
         return res.status(200).json({
-            message: "Save new blood successfully!"
+            message: "Save new heart rate successfully!"
         })
     } catch (err) {
         console.log(err.message)
@@ -25,21 +25,14 @@ const create = async (req, res) => {
     }
 }
 
-const getStatsBlood = async (req, res) => {
+const getStatsHeartRate = async (req, res) => {
     try {
-        let bloods = await Blood.find({ user: req.auth.userId })
-        console.log(bloods)
-        bloods = [...bloods]
+        let heartRates = await HeartRate.find({ user: req.auth.userId })
+        console.log(heartRates)
+        heartRates = [...heartRates]
         let result = []
-        for (let val of bloods) {
-            let high_low_obj = {
-                "high": val["high"],
-                "low": val["low"]
-            }
-            result.push({
-                "created": val["created"], 
-                "value": high_low_obj
-            })
+        for (let val of heartRates) {
+            result.push({"created": val["created"], "value": val["value"]})
         }
         let obj = {
             "appStatus": 0,
@@ -59,5 +52,5 @@ const getStatsBlood = async (req, res) => {
 
 export default {
     create,
-    getStatsBlood
+    getStatsHeartRate
 }

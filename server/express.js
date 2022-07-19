@@ -16,6 +16,7 @@ import medicineReceiptRoutes from './routes/medicineReceipt.routes'
 import apiRoutes from './routes/docs.routes'
 import drugRoutes from './routes/drug.routes'
 import healthRoutes from './routes/health.routes'
+import heartRateRoutes from './routes/heartRate.routes'
 
 import medicineScheduleRoutes from './routes/medicineSchedule.routes'
 import drugTakenInfoRoutes from './routes/drugTakenInfo.routes'
@@ -56,6 +57,7 @@ app.use('/', ecgRoutes)
 app.use('/', medicineReceiptRoutes)
 app.use('/', drugRoutes)
 app.use('/', healthRoutes)
+app.use('/', heartRateRoutes)
 
 app.use('/', medicineScheduleRoutes)
 app.use('/', drugTakenInfoRoutes)

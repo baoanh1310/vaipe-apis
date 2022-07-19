@@ -1,13 +1,9 @@
 import mongoose from 'mongoose'
 
-const BloodSchema = new mongoose.Schema({
-    high: {
+const HeartRateSchema = new mongoose.Schema({
+    value: {
         type: Number,
-        required: 'Blood pressure high value is required'
-    },
-    low: {
-        type: Number,
-        required: 'Blood pressure low value is required'
+        required: 'Heart rate is required'
     },
     created: {
         type: Date,
@@ -22,4 +18,4 @@ const BloodSchema = new mongoose.Schema({
     }
 })
 
-export default mongoose.model('Blood', BloodSchema)
+export default mongoose.model('Heart', HeartRateSchema)
