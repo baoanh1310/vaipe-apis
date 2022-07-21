@@ -1,21 +1,43 @@
 import Oxy from '../models/oxy.model'
+import HeartRate from '../models/heartRate.model'
 import errorHandler from '../helpers/dbErrorHandler'
 
 const create = async (req, res) => {
-    const { value } = req.body
+    const { oxygen, heart_rate } = req.body
     // const img_path = req.file.path
     const oxy = new Oxy(
         {
-            value,
+            value: oxygen,
             // img_path,
             user: req.auth.userId
         }
     )
+    
     try {
         await oxy.save()
+        if (heart_rate != -1.0) {
+            const heartRate = new HeartRate(
+                {
+                    value: heart_rate,
+                    user: req.auth.userId
+                }
+            )
+
+            try {
+                await heartRate.save()
+                
+            } catch (err) {
+                console.log(err.message)
+                return res.status(400).json({
+                    error: errorHandler.getErrorMessage(err)
+                })
+            }
+        }
+
         return res.status(200).json({
-            message: "Save new oxygen value successfully!"
+            message: "Save new oxygen and heart rate values successfully!"
         })
+        
     } catch (err) {
         console.log(err.message)
         return res.status(400).json({
