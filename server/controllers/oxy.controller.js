@@ -3,7 +3,7 @@ import HeartRate from '../models/heartRate.model'
 import errorHandler from '../helpers/dbErrorHandler'
 
 const create = async (req, res) => {
-    const { oxygen, heart_rate } = req.body
+    const { oxygen, heartRate } = req.body
     // const img_path = req.file.path
     const oxy = new Oxy(
         {
@@ -15,16 +15,16 @@ const create = async (req, res) => {
     
     try {
         await oxy.save()
-        if (heart_rate != -1.0) {
-            const heartRate = new HeartRate(
+        if (heartRate != -1.0) {
+            const heartRateObj = new HeartRate(
                 {
-                    value: heart_rate,
+                    value: heartRate,
                     user: req.auth.userId
                 }
             )
 
             try {
-                await heartRate.save()
+                await heartRateObj.save()
                 
             } catch (err) {
                 console.log(err.message)

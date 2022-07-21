@@ -58,7 +58,7 @@ const getStats = async (req, res) => {
             "spO2": oxy_result,
             "temperature": temp_result,
             "blood_pressure": blood_result,
-            "heart_rate": heart_rate_result
+            "heartRate": heart_rate_result
         }
 
         let obj = {
