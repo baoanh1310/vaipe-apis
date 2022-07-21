@@ -1,8 +1,9 @@
 import Blood from '../models/blood.model'
+import HeartRate from '../models/heartRate.model'
 import errorHandler from '../helpers/dbErrorHandler'
 
 const create = async (req, res) => {
-    const { high, low } = req.body
+    const { high, low, heart_rate } = req.body
     // const img_path = req.file.path
     const blood = new Blood(
         {
@@ -14,8 +15,24 @@ const create = async (req, res) => {
     console.log("blood: ", blood)
     try {
         await blood.save()
+        if (heart_rate != -1.0) {
+            const heartRate = new HeartRate(
+                {
+                    value: heart_rate,
+                    user: req.auth.userId
+                }
+            )
+            try {
+                await heartRate.save()
+            } catch (err) {
+                console.log(err.message)
+                return res.status(400).json({
+                    error: errorHandler.getErrorMessage(err)
+                })
+            }
+        }
         return res.status(200).json({
-            message: "Save new blood successfully!"
+            message: "Save new blood and heart rate values successfully!"
         })
     } catch (err) {
         console.log(err.message)
